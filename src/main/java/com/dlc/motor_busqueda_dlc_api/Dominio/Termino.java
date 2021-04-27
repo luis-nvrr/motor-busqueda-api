@@ -13,7 +13,7 @@ public class Termino implements Comparable<Termino>{
 
 
     public Termino(String termino){
-        this(termino, 1, 1);
+        this(termino, 0, 1);
     }
 
     public Termino(String termino, int cantidadDocumentos, int maximaFrecuenciaTermino){
@@ -43,8 +43,7 @@ public class Termino implements Comparable<Termino>{
         return maximaFrecuenciaTermino;
     }
 
-    public void sumarPosteo(Documento documento){
-        cantidadDocumentos++;
+    public void agregarPosteo(Documento documento){
         Posteo recuperado = buscarPosteo(documento);
 
         if(recuperado == null){ agregarNuevoPosteo(documento);}
@@ -55,6 +54,7 @@ public class Termino implements Comparable<Termino>{
 
     private void agregarNuevoPosteo(Documento documento){
         Posteo posteo = new Posteo(documento);
+        cantidadDocumentos++;
         agregarAListaPosteos(posteo);
     }
 

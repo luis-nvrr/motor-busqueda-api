@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
     private String path;
     private String nombre;
-    private int indiceRelevancia;
+    private double indiceRelevancia;
 
     public DocumentoRecuperado(String path, String nombre){
         this.path = path;
@@ -16,13 +16,13 @@ public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
         this.indiceRelevancia = 0;
     }
 
-    public void sumarRelevancia(int relevancia){
+    public void sumarRelevancia(double relevancia){
         this.indiceRelevancia += relevancia;
     }
 
     @Override
     public int compareTo(DocumentoRecuperado o) {
-        return o.indiceRelevancia - this.indiceRelevancia;
+        return (int)o.indiceRelevancia - (int)this.indiceRelevancia;
     }
 
     public String getPath() {
@@ -33,7 +33,7 @@ public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
         return nombre;
     }
 
-    public int getIndiceRelevancia() {
+    public double getIndiceRelevancia() {
         return indiceRelevancia;
     }
 

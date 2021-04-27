@@ -21,7 +21,7 @@ public class Buscador {
         List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados,posteoRepository);
 
         for(Termino termino: terminosOrdenados){
-            agregarDocumentosDeTermino(termino);
+            agregarAlRankingDocumentosDelTermino(termino);
         }
         ordenarListadoDescendente();
     }
@@ -30,7 +30,7 @@ public class Buscador {
 
     public List<DocumentoRecuperado> getDocumentosRecuperados(){return documentosRecuperados;}
 
-    private void agregarDocumentosDeTermino(Termino termino){
+    private void agregarAlRankingDocumentosDelTermino(Termino termino){
         List<Posteo> posteos = termino.getPosteos();
         int iteracion = 0;
         Iterator<Posteo> it = posteos.iterator();
@@ -38,14 +38,17 @@ public class Buscador {
         while(it.hasNext() && iteracion < CANTIDAD_DOCUMENTOS){
             Posteo posteo = it.next();
             Documento documento = posteo.getDocumento();
-            DocumentoRecuperado documentoRecuperado = buscarDocumentoEnListado(documento);
+            DocumentoRecuperado documentoRecuperado = buscarDocumentoEnElRanking(documento);
 
             if(documentoRecuperado == null){ documentoRecuperado = crearNuevoDocumento(documento); }
-            documentoRecuperado.sumarRelevancia(posteo.getFrecuenciaTermino() * termino.getCantidadDocumentos());
+
+            double indiceRelevancia = (double) posteo.getFrecuenciaTermino() *
+                    (Math.log10((double)vocabulario.getCantidadDocumentos() / (double)termino.getCantidadDocumentos()));
+            documentoRecuperado.sumarRelevancia(indiceRelevancia);
         }
     }
 
-    private DocumentoRecuperado buscarDocumentoEnListado(Documento documento){
+    private DocumentoRecuperado buscarDocumentoEnElRanking(Documento documento){
 
         for (DocumentoRecuperado documentoRecuperado : documentosRecuperados) {
             if (documentoRecuperado.equals(documento.getNombre())) {

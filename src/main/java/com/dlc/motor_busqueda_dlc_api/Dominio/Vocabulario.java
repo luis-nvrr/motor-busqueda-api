@@ -19,6 +19,10 @@ public class Vocabulario {
         return this.documentos.get(nombre) != null;
     }
 
+    public int getCantidadDocumentos(){
+        return this.documentos.size();
+    }
+
     public void agregarDocumento(String nombre, String path){
         if(this.tieneDocumento(nombre)){ return; }
 
@@ -26,9 +30,9 @@ public class Vocabulario {
         this.documentos.put(nombre, documento);
     }
 
-    public void agregarTermino(String termino, String nombre){
+    public void agregarTermino(String termino, String documentoString){
         Termino recuperado = terminos.get(termino);
-        Documento documento = documentos.get(nombre);
+        Documento documento = documentos.get(documentoString);
 
         if (recuperado == null) { agregarInexistente(termino, documento); }
         else{
@@ -37,12 +41,12 @@ public class Vocabulario {
     }
 
     private void actualizarExistente(Termino termino, Documento documento){
-        termino.sumarPosteo(documento);
+        termino.agregarPosteo(documento);
         agregarAVocabulario(termino.getTermino(), termino);
     }
     private void agregarInexistente(String termino, Documento documento){
         Termino nuevo = new Termino(termino);
-        nuevo.sumarPosteo(documento);
+        nuevo.agregarPosteo(documento);
         agregarAVocabulario(termino, nuevo);
     }
 

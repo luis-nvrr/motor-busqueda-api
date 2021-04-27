@@ -4,7 +4,6 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Posteo;
 import com.dlc.motor_busqueda_dlc_api.Dominio.PosteoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
-import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,7 +28,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
         try{
             connection = MySQLConnection.conectar();
             Statement statement = connection.createStatement();
-            String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino", termino);
+            String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino DESC", termino);
             ResultSet resultSet = statement.executeQuery(query);
 
             while(resultSet.next()){
