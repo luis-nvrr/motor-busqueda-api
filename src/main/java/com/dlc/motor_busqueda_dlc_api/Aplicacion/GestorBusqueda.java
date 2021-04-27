@@ -6,8 +6,10 @@ import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLPosteoRepository;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLTerminoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 
+@ApplicationScoped
 public class GestorBusqueda {
     DocumentoRepository documentoRepository;
     PosteoRepository posteoRepository;
