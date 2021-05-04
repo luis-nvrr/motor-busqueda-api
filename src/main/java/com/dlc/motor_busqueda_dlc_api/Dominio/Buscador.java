@@ -13,10 +13,10 @@ public class Buscador {
     public Buscador(Vocabulario vocabulario, PosteoRepository posteoRepository){
         this.vocabulario = vocabulario;
         this.posteoRepository = posteoRepository;
-        this.documentosRecuperados = new ArrayList<>();
     }
 
     public void buscar(String terminos){
+        this.documentosRecuperados = new ArrayList<>();
         String terminosSeparados[] =  FormatedorEntrada.formatear(terminos);
         List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados,posteoRepository);
 

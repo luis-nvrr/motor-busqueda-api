@@ -44,6 +44,7 @@ public class DocumentosController {
             JSONObject obj = new JSONObject();
             obj.put("nombre", documentoRecuperado.getNombre());
             obj.put("indice", documentoRecuperado.getIndiceRelevancia());
+            obj.put("ubicacion", documentoRecuperado.getPath());
             obj.put("texto", documentoRecuperado.getTexto());
             list.add(obj);
         }

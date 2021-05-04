@@ -8,7 +8,7 @@ public class MainBuscar {
         GestorBusqueda gestorBusqueda = new GestorBusqueda();
         gestorBusqueda.recuperarVocabulario();
 
-        String terminos = "esto prueba";
+        String terminos = "esto hola";
 
         gestorBusqueda.buscar(terminos);
 
