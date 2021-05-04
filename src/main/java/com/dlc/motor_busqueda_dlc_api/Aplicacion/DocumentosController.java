@@ -1,6 +1,7 @@
 package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRecuperado;
+import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoNoEncontradoException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -33,25 +34,42 @@ public class DocumentosController {
     @GET
     public Response getDocumentosByTermino(@PathParam("termino") String termino){
 
-        gestorBusqueda.buscar(termino);
-        List<DocumentoRecuperado> documentoRecuperados = gestorBusqueda.getDocumentosRecuperados();
+        try{
+            gestorBusqueda.buscar(termino);
+            List<DocumentoRecuperado> documentoRecuperados = gestorBusqueda.getDocumentosRecuperados();
 
-        JSONArray list = new JSONArray();
+            JSONArray list = new JSONArray();
 
-        for(DocumentoRecuperado documentoRecuperado: documentoRecuperados){
-            JSONObject obj = new JSONObject();
-            obj.put("nombre", documentoRecuperado.getNombre());
-            obj.put("indice", documentoRecuperado.getIndiceRelevancia());
-            obj.put("ubicacion", documentoRecuperado.getPath());
-            obj.put("texto", documentoRecuperado.getTexto());
-            list.add(obj);
+            for(DocumentoRecuperado documentoRecuperado: documentoRecuperados){
+                JSONObject obj = new JSONObject();
+                obj.put("nombre", documentoRecuperado.getNombre());
+                obj.put("indice", documentoRecuperado.getIndiceRelevancia());
+                obj.put("ubicacion", documentoRecuperado.getPath());
+                obj.put("texto", documentoRecuperado.getTexto());
+                list.add(obj);
+            }
+
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(list.toJSONString())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        }
+        catch(final TerminoNoEncontradoException e){
+            JSONArray emptyList = new JSONArray();
+            return Response.status(Response.Status.OK)
+                    .entity(emptyList.toJSONString())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+
+        }
+        catch(final Exception e){
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e)
+                    .build();
         }
 
-        return Response
-                .status(Response.Status.OK)
-                .entity(list.toJSONString())
-                .type(MediaType.APPLICATION_JSON)
-                .build();
     }
 
     @POST
@@ -70,12 +88,14 @@ public class DocumentosController {
 
             GestorIndexacion gestorIndexacion = new GestorIndexacion();
             gestorIndexacion.cargarVocabularioArchivo(documentoPath);
-            //gestorBusqueda.recuperarVocabulario();
+            gestorBusqueda.recuperarVocabulario();
 
             return Response.ok("Done").build();
 
         } catch (final Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e)
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(e)
                     .build();
         }
     }

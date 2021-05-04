@@ -1,9 +1,6 @@
 package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
-import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
-import com.dlc.motor_busqueda_dlc_api.Dominio.Posteo;
-import com.dlc.motor_busqueda_dlc_api.Dominio.PosteoRepository;
-import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
+import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,7 +19,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     }
 
     @Override
-    public List<Posteo> getAllPosteos(String termino, Map<String, Documento> documentos) {
+    public List<Posteo> getAllPosteosByTermino(String termino, Map<String, Documento> documentos) throws TerminoNoEncontradoException {
         List<Posteo> posteosRecuperados = new ArrayList<>();
 
         try{
@@ -30,6 +27,10 @@ public class MySQLPosteoRepository implements PosteoRepository {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino DESC", termino);
             ResultSet resultSet = statement.executeQuery(query);
+
+            if (!resultSet.isBeforeFirst()){
+                throw new TerminoNoEncontradoException();
+            }
 
             while(resultSet.next()){
                 String documentoString = resultSet.getString("nombre"); // TODO cambiar nombre por documento
@@ -51,32 +52,6 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void savePosteo(Posteo posteo) {
     }
-
-    /*@Override
-    public void getAllPosteos(Map<String, Termino> terminos, Map<String, Documento> documentos) {
-        try{
-            connection = MySQLConnection.conectar();
-            Statement statement = connection.createStatement();
-            String query = "SELECT * FROM Posteos";
-            ResultSet resultSet = statement.executeQuery(query);
-
-            while(resultSet.next()){
-                String terminoString = resultSet.getString("termino");
-                String documentoString = resultSet.getString("nombre"); // TODO cambiar nombre por documento
-                int frecuenciaTermino = resultSet.getInt("frecuenciaTermino");
-
-                Documento documento = documentos.get(documentoString);
-                Posteo posteo = new Posteo(documento, frecuenciaTermino);
-
-                Termino termino = terminos.get(terminoString);
-                termino.agregarAListaPosteos(posteo);
-            }
-            connection.close();
-        }
-        catch (SQLException exception){
-            exception.printStackTrace();
-        }
-    }*/
 
     @Override
     public void savePosteos(Map<String, Termino> terminos) {

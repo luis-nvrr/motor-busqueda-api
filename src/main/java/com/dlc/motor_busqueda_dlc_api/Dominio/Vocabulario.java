@@ -54,12 +54,12 @@ public class Vocabulario {
         this.terminos.put(key, termino);
     }
 
-    public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository){
+    public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository) throws TerminoNoEncontradoException {
         List<Termino> terminosOrdenados = new ArrayList<>();
 
         for(String terminoString : terminosString){
             Termino termino = this.terminos.get(terminoString);
-            termino.setPosteos(posteoRepository.getAllPosteos(terminoString, documentos));
+            termino.setPosteos(posteoRepository.getAllPosteosByTermino(terminoString, documentos));
             terminosOrdenados.add(termino);
         }
 
