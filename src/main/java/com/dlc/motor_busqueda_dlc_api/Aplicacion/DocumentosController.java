@@ -1,18 +1,16 @@
 package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 
-import com.dlc.motor_busqueda_dlc_api.Aplicacion.GestorBusqueda;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRecuperado;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.mail.BodyPart;
+import javax.mail.internet.MimeMultipart;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 @Path("/")
@@ -55,4 +53,31 @@ public class DocumentosController {
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
+
+    @POST
+    @Path("/documento")
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFile(final MimeMultipart file) {
+        if (file == null)
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Must supply a valid file").build();
+
+        try {
+            BodyPart bodyPart = file.getBodyPart(0);
+            String documentoPath = "C:\\Users\\luis\\Downloads\\DLC\\"+ bodyPart.getFileName();
+            bodyPart.writeTo(new FileOutputStream(documentoPath));
+
+            GestorIndexacion gestorIndexacion = new GestorIndexacion();
+            gestorIndexacion.cargarVocabularioArchivo(documentoPath);
+            //gestorBusqueda.recuperarVocabulario();
+
+            return Response.ok("Done").build();
+
+        } catch (final Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e)
+                    .build();
+        }
+    }
+
 }

@@ -85,7 +85,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
             Statement statement = connection.createStatement();
             StringBuilder query =
                     new StringBuilder("INSERT INTO Posteos " +
-                            "(nombre, termino, frecuenciaTermino) VALUES "); // TODO cambiar nombre por documento
+                            "(nombre, termino, frecuenciaTermino) VALUES ");
 
 
             for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
@@ -94,7 +94,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
                 List<Posteo> listaPosteos = termino.getPosteos();
 
                 for (Posteo posteo : listaPosteos) {
-                    String documento = posteo.obtenerNombreDocumento(); // TODO cambiar obtenerNombre por documento
+                    String documento = posteo.obtenerNombreDocumento();
                     int frecuenciaTermino = posteo.getFrecuenciaTermino();
 
                     query.append("('").append(documento).append("','")

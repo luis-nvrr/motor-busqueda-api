@@ -132,8 +132,4 @@ public class Vocabulario {
         Documento documento = this.documentos.get(documentoString);
         return documento.getPath();
     }
-
-    /* public void getAllPosteos(PosteoRepository posteoRepository){
-        posteoRepository.getAllPosteos(terminos, documentos);
-    }*/
 }

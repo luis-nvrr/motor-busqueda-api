@@ -64,7 +64,10 @@ public class MySQLTerminoRepository implements TerminoRepository {
                         .append(cantidadDocumentos).append(",")
                         .append(maximaFrecuenciaTermino).append("),");
             }
-            query.setCharAt(query.length()-1, ';');
+            query.setCharAt(query.length()-1, ' ');
+            query.append("ON DUPLICATE KEY UPDATE cantidadDocumentos = cantidadDocumentos+1, ")
+                    .append("maximaFrecuenciaTermino = IF(maximaFrecuenciaTermino > VALUES(maximaFrecuenciaTermino),")
+                    .append("maximaFrecuenciaTermino, VALUES(maximaFrecuenciaTermino))");
 
             statement.execute(query.toString());
             connection.close();

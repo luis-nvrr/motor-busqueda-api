@@ -13,7 +13,7 @@ public class Indexador {
     }
 
     public void cargarVocabularioArchivo(IArchivo archivo){
-        vocabulario.agregarDocumento(archivo.obtenerNombre(), archivo.obtenerPath()); // TODO ver links
+        vocabulario.agregarDocumento(archivo.obtenerNombre(), archivo.obtenerPath());
         String linea;
 
         archivo.openReader();

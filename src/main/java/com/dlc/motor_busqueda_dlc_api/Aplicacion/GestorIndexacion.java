@@ -6,7 +6,6 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.IArchivo;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLDocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLPosteoRepository;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLTerminoRepository;
-import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.IDirectorio;
 
 public class GestorIndexacion {

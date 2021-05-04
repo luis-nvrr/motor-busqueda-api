@@ -35,7 +35,8 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                         .append(path).append("','")
                         .append(link).append("'),");
             }
-            query.setCharAt(query.length()-1, ';');
+            query.setCharAt(query.length()-1, ' ');
+            query.append("ON DUPLICATE KEY UPDATE nombre=nombre");
 
             statement.execute(query.toString());
             connection.close();
