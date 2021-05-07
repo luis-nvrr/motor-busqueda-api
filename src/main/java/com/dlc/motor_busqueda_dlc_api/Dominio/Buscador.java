@@ -15,7 +15,7 @@ public class Buscador {
         this.posteoRepository = posteoRepository;
     }
 
-    public void buscar(String terminos) throws TerminoNoEncontradoException {
+    public void buscar(String terminos) throws TerminoNoEncontradoException { // TODO fix da error cuando al menos un termino no es encontrado
         this.documentosRecuperados = new ArrayList<>();
         String terminosSeparados[] =  FormatedorEntrada.formatear(terminos);
         List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados,posteoRepository);

@@ -9,7 +9,6 @@ public class MainCargar {
 
         //String stopWordsPath = "C:\\Users\\luis\\code\\motor-busqueda-dlc-api\\src\\main\\resources\\stopWords.txt";
         String directorioPath = "C:\\Users\\luis\\Downloads\\DLC\\prueba1";
-        //String archivoPath = dotenv.get("ARCHIVO");
 
         //gestorIndexacion.cargarStopWords(stopWordsPath);
         gestorIndexacion.cargarVocabularioDirectorio(directorioPath);

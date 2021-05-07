@@ -31,7 +31,7 @@ public class GestorBusqueda {
         this.vocabulario.getAllTerminos(terminoRepository);
     }
 
-    public String buscarPathDocumento(String documento){
+    public String buscarPathDocumento(String documento) throws DocumentoNoEncontradoException {
         return vocabulario.getPathDocumento(documento);
     }
 

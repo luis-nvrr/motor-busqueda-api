@@ -2,6 +2,10 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,11 +16,6 @@ import java.util.Map;
 
 public class MySQLPosteoRepository implements PosteoRepository {
     private Connection connection;
-
-    @Override
-    public Posteo getPosteo() {
-        return null;
-    }
 
     @Override
     public List<Posteo> getAllPosteosByTermino(String termino, Map<String, Documento> documentos) throws TerminoNoEncontradoException {
@@ -50,10 +49,6 @@ public class MySQLPosteoRepository implements PosteoRepository {
     }
 
     @Override
-    public void savePosteo(Posteo posteo) {
-    }
-
-    @Override
     public void savePosteos(Map<String, Termino> terminos) {
         try {
             connection = MySQLConnection.conectar();
@@ -81,6 +76,40 @@ public class MySQLPosteoRepository implements PosteoRepository {
             query.setCharAt(query.length()-1, ';');
 
             statement.execute(query.toString());
+            connection.close();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
+    public void bulkSavePosteos(Map<String, Termino> terminos) {
+        try {
+            connection = MySQLConnection.conectar();
+
+            assert connection != null;
+            Statement statement = connection.createStatement();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
+                String palabra = entry.getKey();
+                Termino termino = entry.getValue();
+                List<Posteo> listaPosteos = termino.getPosteos();
+
+                for (Posteo posteo : listaPosteos) {
+                    String documento = posteo.obtenerNombreDocumento();
+                    int frecuenciaTermino = posteo.getFrecuenciaTermino();
+
+                    stringBuilder.append("\"").append(documento).append("\",\"")
+                            .append(palabra).append("\",\"")
+                            .append(frecuenciaTermino).append("\",")
+                            .append("\n");
+                }
+            }
+
+            String query = BulkInsertHelper.bulkInsert("posteos", stringBuilder.toString());
+            statement.executeQuery(query);
             connection.close();
 
         } catch (SQLException exception) {

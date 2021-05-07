@@ -40,7 +40,7 @@ public class GestorIndexacion {
     public void cargarVocabularioDirectorio(String directorioPath){
         IDirectorio directorio = new DirectorioLocal(directorioPath);
         indexador.cargarVocabularioDirectorio(directorio);
-        persistir();
+        persistirBulk();
     }
 
     public String mostrarVocabulario(){
@@ -59,5 +59,11 @@ public class GestorIndexacion {
         vocabulario.saveDocumentos(documentoRepository);
         vocabulario.saveTerminos(terminoRepository);
         vocabulario.savePosteos(posteoRepository);
+    }
+
+    private void persistirBulk(){
+        vocabulario.bulkSaveDocumentos(documentoRepository);
+        vocabulario.bulkSaveTerminos(terminoRepository);
+        vocabulario.bulkSavePosteos(posteoRepository);
     }
 }

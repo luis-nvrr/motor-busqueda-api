@@ -3,6 +3,7 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
 
+import java.io.*;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,30 +11,26 @@ import java.util.Map;
 public class MySQLDocumentoRepository implements DocumentoRepository {
 
     private Connection connection;
-    private Map<String, Documento> documentos;
-
-    public Documento getDocumentoByName(String name){
-        return documentos.get(name);
-    }
 
     @Override
     public void saveDocumentos(Map<String, Documento> documentos) {
         try {
             connection = MySQLConnection.conectar();
+
+            assert connection != null;
             Statement statement = connection.createStatement();
+
             StringBuilder query =
                     new StringBuilder("INSERT INTO Documentos " +
-                            "(nombre, path, link) VALUES ");
+                            "(nombre, path) VALUES ");
 
             for (Map.Entry<String, Documento> entry : documentos.entrySet()) {
                 Documento documento = entry.getValue();
                 String nombre = documento.getNombre();
                 String path = (documento.getPath()).replace("\\", "\\\\");
-                String link = documento.getLink();
 
                 query.append("('").append(nombre).append("','")
-                        .append(path).append("','")
-                        .append(link).append("'),");
+                        .append(path).append("'),");
             }
             query.setCharAt(query.length()-1, ' ');
             query.append("ON DUPLICATE KEY UPDATE nombre=nombre");
@@ -46,8 +43,36 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
         }
     }
 
+    @Override
+    public void bulkSaveDocumentos(Map<String, Documento> documentos) {
+        try {
+            connection = MySQLConnection.conectar();
+
+            assert connection != null;
+            Statement statement = connection.createStatement();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (Map.Entry<String, Documento> entry : documentos.entrySet()) {
+                Documento documento = entry.getValue();
+                String nombre = documento.getNombre();
+                String path = (documento.getPath()).replace("\\", "\\\\");
+
+                stringBuilder.append("\"").append(nombre).append("\",\"")
+                        .append(path).append("\",")
+                        .append("\n");
+            }
+
+            String query = BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString());
+            statement.executeQuery(query);
+            connection.close();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public Map<String, Documento> getAllDocumentos(){
-        documentos = new Hashtable<>();
+        Map<String, Documento> documentos = new Hashtable<>();
         try{
             connection = MySQLConnection.conectar();
             Statement statement = connection.createStatement();
@@ -57,9 +82,8 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
             while(resultSet.next()){
                 String nombre = resultSet.getString("nombre");
                 String path = resultSet.getString("path");
-                String link = resultSet.getString("link");
 
-                Documento documento= new Documento(nombre, path); // TODO agregar link
+                Documento documento= new Documento(nombre, path);
                 documentos.put(nombre, documento);
             }
             connection.close();

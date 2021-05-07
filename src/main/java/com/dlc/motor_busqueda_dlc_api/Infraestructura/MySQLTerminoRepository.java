@@ -3,6 +3,10 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoRepository;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,15 +14,6 @@ import java.util.Map;
 public class MySQLTerminoRepository implements TerminoRepository {
 
     private Connection connection;
-
-    @Override
-    public Termino getTermino(String termino) {
-        return null;
-    }
-
-    @Override
-    public void saveTermino(Termino termino) {
-    }
 
     @Override
     public Map<String, Termino> getAllTerminos() {
@@ -75,5 +70,35 @@ public class MySQLTerminoRepository implements TerminoRepository {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    @Override
+    public void bulkSaveTerminos(Map<String, Termino> terminos) {
+
+        try {
+            connection = MySQLConnection.conectar();
+            Statement statement = connection.createStatement();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
+                String palabra = entry.getValue().getTermino();
+                int cantidadDocumentos = entry.getValue().getCantidadDocumentos();
+                int maximaFrecuenciaTermino = entry.getValue().getMaximaFrecuenciaTermino();
+
+                stringBuilder.append("\"").append(palabra).append("\",\"")
+                        .append(cantidadDocumentos).append("\",\"")
+                        .append(maximaFrecuenciaTermino).append("\",")
+                        .append("\n");
+            }
+
+            String query = BulkInsertHelper.bulkInsert("terminos", stringBuilder.toString());
+            statement.executeQuery(query);
+            connection.close();
+
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+
+
     }
 }

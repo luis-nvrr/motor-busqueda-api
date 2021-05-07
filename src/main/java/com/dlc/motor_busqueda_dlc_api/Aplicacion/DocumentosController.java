@@ -1,5 +1,6 @@
 package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 
+import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoNoEncontradoException;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRecuperado;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoNoEncontradoException;
 import org.json.simple.JSONArray;
@@ -24,10 +25,18 @@ public class DocumentosController {
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getDocumentoByNombre(@PathParam("documento") String documento){
-        File file = new File(gestorBusqueda.buscarPathDocumento(documento));
-        return Response.ok(file, MediaType.APPLICATION_OCTET_STREAM)
-                .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
-                .build();
+        try {
+            File file = new File(gestorBusqueda.buscarPathDocumento(documento));
+            return Response
+                    .ok(file, MediaType.APPLICATION_OCTET_STREAM)
+                    .header("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"")
+                    .build();
+        } catch (DocumentoNoEncontradoException e) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+
     }
 
     @Path("documentos/{termino}")
@@ -57,7 +66,8 @@ public class DocumentosController {
         }
         catch(final TerminoNoEncontradoException e){
             JSONArray emptyList = new JSONArray();
-            return Response.status(Response.Status.OK)
+            return Response
+                    .status(Response.Status.OK)
                     .entity(emptyList.toJSONString())
                     .type(MediaType.APPLICATION_JSON)
                     .build();
@@ -79,7 +89,7 @@ public class DocumentosController {
     public Response uploadFile(final MimeMultipart file) {
         if (file == null)
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Must supply a valid file").build();
+                    .entity("nombre de archivo no válido").build();
 
         try {
             BodyPart bodyPart = file.getBodyPart(0);
@@ -90,7 +100,7 @@ public class DocumentosController {
             gestorIndexacion.cargarVocabularioArchivo(documentoPath);
             gestorBusqueda.recuperarVocabulario();
 
-            return Response.ok("Done").build();
+            return Response.ok("carga correcta").build();
 
         } catch (final Exception e) {
             return Response

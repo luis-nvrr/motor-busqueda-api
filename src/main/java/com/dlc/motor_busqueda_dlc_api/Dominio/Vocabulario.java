@@ -108,6 +108,18 @@ public class Vocabulario {
         return stringBuilder.toString();
     }
 
+    public void bulkSaveTerminos(TerminoRepository terminoRepository){
+        terminoRepository.bulkSaveTerminos(terminos);
+    }
+
+    public void bulkSavePosteos(PosteoRepository posteoRepository){
+        posteoRepository.bulkSavePosteos(terminos);
+    }
+
+    public void bulkSaveDocumentos(DocumentoRepository documentoRepository){
+        documentoRepository.bulkSaveDocumentos(this.documentos);
+    }
+
     public void saveTerminos(TerminoRepository terminoRepository){
         terminoRepository.saveTerminos(terminos);
     }
@@ -128,8 +140,13 @@ public class Vocabulario {
         this.terminos = terminoRepository.getAllTerminos();
     }
 
-    public String getPathDocumento(String documentoString){
+    public String getPathDocumento(String documentoString) throws DocumentoNoEncontradoException {
         Documento documento = this.documentos.get(documentoString);
+
+        if(documento == null){
+            throw new DocumentoNoEncontradoException();
+        }
+
         return documento.getPath();
     }
 }
