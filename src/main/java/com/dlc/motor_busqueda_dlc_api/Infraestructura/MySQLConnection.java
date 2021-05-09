@@ -9,7 +9,8 @@ public class MySQLConnection {
             + "?verifyServerCertificate=false"
             + "&useSSL=false"
             + "&requireSSL=false"
-            + "&sslMode=disabled";
+            + "&sslMode=disabled"
+            + "&allowMultiQueries=true";
 
     public static Connection conectar(){
         try {

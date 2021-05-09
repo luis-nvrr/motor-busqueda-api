@@ -14,17 +14,22 @@ public class BulkInsertHelper {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(values);
         } catch (IOException exception) {
-            exception.printStackTrace(); // TODO cambiar por logger
+            exception.printStackTrace();
         }
 
         StringBuilder query;
         query = new StringBuilder();
+        query.append("SET UNIQUE_CHECKS=0;")
+                .append("SET FOREIGN_KEY_CHECKS=0;")
+                .append("TRUNCATE ").append(tabla).append(";")
+                .append("SET AUTOCOMMIT=0;");
         query.append("LOAD DATA INFILE ")
                 .append("'").append("C:\\\\ProgramData\\\\MySQL\\\\MySQL Server 8.0\\\\Uploads\\\\")
                 .append(tabla).append(".csv").append("'")
                 .append(" INTO TABLE ").append(tabla)
                 .append(" FIELDS TERMINATED BY ','")
-                .append(" ENCLOSED BY '\"'");
+                .append(" ENCLOSED BY '\"';");
+        query.append("COMMIT;");
 
         return query.toString();
     }
