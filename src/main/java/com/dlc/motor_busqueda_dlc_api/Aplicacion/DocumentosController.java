@@ -14,21 +14,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/")
 public class DocumentosController {
 
     @Inject
     private GestorBusqueda gestorBusqueda;
+    private static Logger logger = Logger.getLogger("global");
 
-    public DocumentosController(){
-        gestorBusqueda.recuperarVocabulario();
-    }
-
-    @Path("documento/{documento}")
+    @Path("download/{documento}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response getDocumentoByNombre(@PathParam("documento") String documento){
+    public Response getDocumentoFile(@PathParam("documento") String documento){
         try {
             File file = new File(gestorBusqueda.buscarPathDocumento(documento));
             return Response
@@ -43,12 +41,53 @@ public class DocumentosController {
 
     }
 
-    @Path("documentos/{termino}")
+    @Path("documentos/{documento}")
+    @GET
+    public Response getDocumentoText(@PathParam("documento") String documento){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("texto", gestorBusqueda.buscarDocumento(documento));
+
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(obj.toJSONString())
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
+        } catch (DocumentoNoEncontradoException e) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+
+    }
+
+    @Path("documentos")
+    @GET
+    public Response getDocumentos(){
+        JSONArray list = new JSONArray();
+        JSONObject obj = new JSONObject();
+
+        String[] nombresDocumentos = gestorBusqueda.buscarNombresDocumentos();
+        for(String nombre : nombresDocumentos){
+            list.add(nombre);
+        }
+
+        obj.put("documentos", list);
+
+        return Response
+                .status(Response.Status.OK)
+                .entity(obj.toJSONString())
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
+
+    @Path("terminos/{termino}")
     @GET
     public Response getDocumentosByTermino(@PathParam("termino") String termino){
 
         try{
-            gestorBusqueda.buscar(termino);
+            gestorBusqueda.buscarTerminos(termino);
             List<DocumentoRecuperado> documentoRecuperados = gestorBusqueda.getDocumentosRecuperados();
 
             JSONArray list = new JSONArray();
@@ -58,7 +97,6 @@ public class DocumentosController {
                 obj.put("nombre", documentoRecuperado.getNombre());
                 obj.put("indice", documentoRecuperado.getIndiceRelevancia());
                 obj.put("ubicacion", documentoRecuperado.getPath());
-                obj.put("texto", documentoRecuperado.getTexto());
                 list.add(obj);
             }
 
@@ -78,16 +116,15 @@ public class DocumentosController {
 
         }
         catch(final Exception e){
+            e.printStackTrace();
             return Response
                     .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e)
                     .build();
         }
-
     }
 
     @POST
-    @Path("/documento")
+    @Path("/documentos")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(final MimeMultipart file) {
@@ -97,19 +134,23 @@ public class DocumentosController {
 
         try {
             BodyPart bodyPart = file.getBodyPart(0);
-            String documentoPath = "C:\\Users\\luis\\Downloads\\DLC\\"+ bodyPart.getFileName();
+            String nombreDocumento = bodyPart.getFileName();
+            //String documentoPath = "C:\\Users\\luis\\Downloads\\pruebas\\"+ nombreDocumento;
+            String documentoPath = "C:\\Users\\luis\\code\\motor-busqueda-dlc-api\\documents\\documentos\\" + nombreDocumento;
+
+            bodyPart.removeHeader("Content-Disposition");
+            bodyPart.removeHeader("Content-Type");
             bodyPart.writeTo(new FileOutputStream(documentoPath));
 
-            GestorIndexacion gestorIndexacion = new GestorIndexacion();
-            gestorIndexacion.cargarVocabularioArchivo(documentoPath);
-            gestorBusqueda.recuperarVocabulario();
+            GestorIndexacion gestorIndexacion = new GestorIndexacion(gestorBusqueda);
+            gestorIndexacion.cargarVocabularioDeArchivo(documentoPath);
 
             return Response.ok("carga correcta").build();
 
         } catch (final Exception e) {
+            e.printStackTrace();
             return Response
                     .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(e)
                     .build();
         }
     }

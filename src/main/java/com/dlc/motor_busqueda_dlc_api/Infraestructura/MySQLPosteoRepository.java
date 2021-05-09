@@ -2,10 +2,6 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,12 +9,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MySQLPosteoRepository implements PosteoRepository {
     private Connection connection;
+    private static Logger logger = Logger.getLogger("global");
 
     @Override
-    public List<Posteo> getAllPosteosByTermino(String termino, Map<String, Documento> documentos) throws TerminoNoEncontradoException {
+    public List<Posteo> getAllPosteosByTermino(String termino, Map<String, Documento> documentos) {
         List<Posteo> posteosRecuperados = new ArrayList<>();
 
         try{
@@ -26,10 +24,6 @@ public class MySQLPosteoRepository implements PosteoRepository {
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino DESC", termino);
             ResultSet resultSet = statement.executeQuery(query);
-
-            if (!resultSet.isBeforeFirst()){
-                throw new TerminoNoEncontradoException();
-            }
 
             while(resultSet.next()){
                 String documentoString = resultSet.getString("nombre"); // TODO cambiar nombre por documento
@@ -43,7 +37,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
             return posteosRecuperados;
         }
         catch (SQLException exception){
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
         return posteosRecuperados;
     }
@@ -79,7 +73,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
     }
 
@@ -113,7 +107,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
     }
 }
