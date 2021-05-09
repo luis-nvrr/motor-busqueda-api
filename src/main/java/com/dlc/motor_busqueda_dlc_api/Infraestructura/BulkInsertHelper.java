@@ -19,17 +19,12 @@ public class BulkInsertHelper {
 
         StringBuilder query;
         query = new StringBuilder();
-        query.append("SET UNIQUE_CHECKS=0").append("\n")
-                .append("SET FOREIGN_KEY_CHECKS=0").append("\n")
-                .append("TRUNCATE ").append(tabla).append("\n")
-                .append("SET AUTOCOMMIT=0 ").append("\n")
-                .append("LOAD DATA INFILE ")
+        query.append("LOAD DATA INFILE ")
                 .append("'").append("C:\\\\ProgramData\\\\MySQL\\\\MySQL Server 8.0\\\\Uploads\\\\")
                 .append(tabla).append(".csv").append("'")
                 .append(" INTO TABLE ").append(tabla)
                 .append(" FIELDS TERMINATED BY ','")
-                .append(" ENCLOSED BY '\"'").append("\n")
-                .append("COMMIT");
+                .append(" ENCLOSED BY '\"'");
 
         return query.toString();
     }

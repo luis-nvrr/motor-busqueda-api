@@ -4,7 +4,6 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLDocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLPosteoRepository;
 import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLTerminoRepository;
-import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
@@ -23,7 +22,6 @@ public class GestorBusqueda {
         this.terminoRepository = new MySQLTerminoRepository();
         this.vocabulario = new Vocabulario();
         this.buscador = new Buscador(vocabulario, posteoRepository);
-        recuperarVocabulario();
     }
 
     public void recuperarVocabulario(){

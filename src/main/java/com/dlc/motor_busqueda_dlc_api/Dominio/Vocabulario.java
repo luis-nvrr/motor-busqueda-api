@@ -149,4 +149,34 @@ public class Vocabulario {
 
         return documento.getPath();
     }
+
+    public void ordenarVocabulario(){
+        this.terminos = MapUtil.sortByKey(terminos);
+    }
+
+    public void ordenarDocumentos(){
+        this.documentos = MapUtil.sortByKey(documentos);
+    }
+
+    public void ordenarTerminos(){
+
+        for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
+            Termino termino = entry.getValue();
+            termino.ordenarPosteos();
+        }
+    }
+
+    private static class MapUtil {
+        public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
+            List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
+            list.sort(Map.Entry.comparingByKey());
+
+            Map<K, V> result = new LinkedHashMap<>();
+            for (Map.Entry<K, V> entry : list) {
+                result.put(entry.getKey(), entry.getValue());
+            }
+
+            return result;
+        }
+    }
 }

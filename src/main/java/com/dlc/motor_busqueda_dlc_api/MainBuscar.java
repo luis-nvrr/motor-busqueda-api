@@ -9,7 +9,7 @@ public class MainBuscar {
         GestorBusqueda gestorBusqueda = new GestorBusqueda();
         gestorBusqueda.recuperarVocabulario();
 
-        String terminos = "esto hola";
+        String terminos = "prueba";
 
         try {
             gestorBusqueda.buscar(terminos);
@@ -17,8 +17,8 @@ public class MainBuscar {
             e.printStackTrace();
         }
 
-        System.out.println(gestorBusqueda.mostrarDocumentosRecuperados());
-        //System.out.println(gestorBusqueda.mostrarDocumentos());
-        //System.out.println(gestorBusqueda.mostrarCantidadTerminosVocabulario());
+        //System.out.println(gestorBusqueda.mostrarDocumentosRecuperados());
+        System.out.println(gestorBusqueda.mostrarDocumentos());
+        System.out.println(gestorBusqueda.mostrarCantidadTerminosVocabulario());
     }
 }

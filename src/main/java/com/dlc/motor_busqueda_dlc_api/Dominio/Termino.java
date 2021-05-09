@@ -1,8 +1,8 @@
 package com.dlc.motor_busqueda_dlc_api.Dominio;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Map.*;
 
 public class Termino implements Comparable<Termino>{
 
@@ -100,5 +100,10 @@ public class Termino implements Comparable<Termino>{
     @Override
     public int compareTo(Termino o) {
         return this.cantidadDocumentos - o.cantidadDocumentos;
+    }
+
+
+    public void ordenarPosteos(){
+        Collections.sort(posteos);
     }
 }

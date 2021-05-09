@@ -21,6 +21,10 @@ public class DocumentosController {
     @Inject
     private GestorBusqueda gestorBusqueda;
 
+    public DocumentosController(){
+        gestorBusqueda.recuperarVocabulario();
+    }
+
     @Path("documento/{documento}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)

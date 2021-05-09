@@ -62,6 +62,9 @@ public class GestorIndexacion {
     }
 
     private void persistirBulk(){
+        vocabulario.ordenarVocabulario();
+        vocabulario.ordenarDocumentos();
+        vocabulario.ordenarTerminos();
         vocabulario.bulkSaveDocumentos(documentoRepository);
         vocabulario.bulkSaveTerminos(terminoRepository);
         vocabulario.bulkSavePosteos(posteoRepository);

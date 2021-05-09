@@ -8,7 +8,7 @@ public class MainCargar {
         GestorIndexacion gestorIndexacion = new GestorIndexacion();
 
         //String stopWordsPath = "C:\\Users\\luis\\code\\motor-busqueda-dlc-api\\src\\main\\resources\\stopWords.txt";
-        String directorioPath = "C:\\Users\\luis\\Downloads\\DLC\\prueba1";
+        String directorioPath = "C:\\Users\\luis\\code\\motor-busqueda-dlc-api\\documents\\documentos\\";
 
         //gestorIndexacion.cargarStopWords(stopWordsPath);
         gestorIndexacion.cargarVocabularioDirectorio(directorioPath);
