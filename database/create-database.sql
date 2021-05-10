@@ -10,15 +10,15 @@ CREATE TABLE Terminos(
 
 CREATE TABLE Documentos(
     nombre VARCHAR(20),
-    path VARCHAR(200)
+    path VARCHAR(200),
     CONSTRAINT pk_documentos PRIMARY KEY Documentos(nombre)
 );
 
 CREATE TABLE Posteos(
-    nombre VARCHAR(20),
     termino VARCHAR(100),
+    nombre VARCHAR(20),
     frecuenciaTermino INTEGER,
-    CONSTRAINT pk_posteos PRIMARY KEY Posteos(nombre, termino)
+    CONSTRAINT pk_posteos PRIMARY KEY Posteos(termino,nombre)
 );
 
 

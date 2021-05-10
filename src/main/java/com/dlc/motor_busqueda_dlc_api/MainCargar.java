@@ -7,7 +7,7 @@ public class MainCargar {
     public static void main(String[] args) {
         GestorIndexacion gestorIndexacion = new GestorIndexacion();
 
-        String directorioPath = "C:\\Users\\luis\\Downloads\\pruebas\\";
+        String directorioPath = System.getenv("DIRECTORIO_DOCUMENTOS");
 
         gestorIndexacion.cargarVocabularioDeDirectorio(directorioPath);
         //gestorIndexacion.cargarVocabularioArchivo(pathArchivo);

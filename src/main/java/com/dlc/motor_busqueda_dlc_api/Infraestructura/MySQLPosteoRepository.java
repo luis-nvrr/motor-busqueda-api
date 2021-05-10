@@ -95,8 +95,8 @@ public class MySQLPosteoRepository implements PosteoRepository {
                     String documento = posteo.obtenerNombreDocumento();
                     int frecuenciaTermino = posteo.getFrecuenciaTermino();
 
-                    stringBuilder.append("\"").append(documento).append("\",\"")
-                            .append(palabra).append("\",\"")
+                    stringBuilder.append("\"").append(palabra).append("\",\"")
+                            .append(documento).append("\",\"")
                             .append(frecuenciaTermino).append("\",")
                             .append("\n");
                 }
