@@ -135,8 +135,7 @@ public class DocumentosController {
         try {
             BodyPart bodyPart = file.getBodyPart(0);
             String nombreDocumento = bodyPart.getFileName();
-            //String documentoPath = "C:\\Users\\luis\\Downloads\\pruebas\\"+ nombreDocumento;
-            String documentoPath = "C:\\Users\\luis\\code\\motor-busqueda-dlc-api\\documents\\documentos\\" + nombreDocumento;
+            String documentoPath = System.getenv("DIRECTORIO_DOCUMENTOS") + nombreDocumento;
 
             bodyPart.removeHeader("Content-Disposition");
             bodyPart.removeHeader("Content-Type");

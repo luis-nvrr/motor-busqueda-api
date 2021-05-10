@@ -9,6 +9,7 @@ public class MainBuscar {
         GestorBusqueda gestorBusqueda = new GestorBusqueda();
 
         String terminos = "estonoexiste";
+        System.out.println(System.getenv("DIRECTORIO_DOCUMENTOS"));
 
         try {
             gestorBusqueda.buscarTerminos(terminos);
