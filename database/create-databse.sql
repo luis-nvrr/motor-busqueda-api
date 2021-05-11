@@ -10,7 +10,7 @@ CREATE TABLE Terminos(
 
 CREATE TABLE Documentos(
     nombre VARCHAR(20),
-    path VARCHAR(200)
+    path VARCHAR(200),
     CONSTRAINT pk_documentos PRIMARY KEY Documentos(nombre)
 );
 

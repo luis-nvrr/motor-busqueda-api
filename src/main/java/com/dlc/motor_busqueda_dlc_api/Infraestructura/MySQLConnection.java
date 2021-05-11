@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class MySQLConnection {
     public static final String USER = "root";
-    public  static final String PASSWORD = "";
+    public  static final String PASSWORD = "2ANDahalfmen";
     public static String dbURL = "jdbc:mysql://localhost:3306/motor-busqueda-dlc"
             + "?verifyServerCertificate=false"
             + "&useSSL=false"
