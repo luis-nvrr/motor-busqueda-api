@@ -46,6 +46,7 @@ public class DocumentosController {
     public Response getDocumentoText(@PathParam("documento") String documento){
         try {
             JSONObject obj = new JSONObject();
+            obj.put("nombre", documento);
             obj.put("texto", gestorBusqueda.buscarDocumento(documento));
 
             return Response
