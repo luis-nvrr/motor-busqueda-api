@@ -62,8 +62,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                         .append("\n");
             }
 
-            String query = BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString());
-            statement.executeQuery(query);
+            BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString(), statement);
             connection.close();
 
         } catch (SQLException exception) {

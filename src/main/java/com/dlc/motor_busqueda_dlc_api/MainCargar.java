@@ -6,14 +6,9 @@ public class MainCargar {
 
     public static void main(String[] args) {
         GestorIndexacion gestorIndexacion = new GestorIndexacion();
-
         String directorioPath = System.getenv("DIRECTORIO_DOCUMENTOS");
 
         gestorIndexacion.cargarVocabularioDeDirectorio(directorioPath);
-        //gestorIndexacion.cargarVocabularioArchivo(pathArchivo);
-
-        //System.out.println(gestorIndexacion.mostrarVocabulario());
         System.out.println(gestorIndexacion.mostrarCantidadTerminosVocabulario());
-        //System.out.println(gestorVisualizacion.mostrarOrdenPosteo());
     }
 }

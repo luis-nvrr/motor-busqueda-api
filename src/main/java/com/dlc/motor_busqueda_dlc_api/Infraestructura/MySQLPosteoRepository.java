@@ -102,8 +102,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
                 }
             }
 
-            String query = BulkInsertHelper.bulkInsert("posteos", stringBuilder.toString());
-            statement.executeQuery(query);
+            BulkInsertHelper.bulkInsert("posteos", stringBuilder.toString(), statement);
             connection.close();
 
         } catch (SQLException exception) {

@@ -133,8 +133,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
                         .append("\n");
             }
 
-            String query = BulkInsertHelper.bulkInsert("terminos", stringBuilder.toString());
-            statement.executeQuery(query);
+            BulkInsertHelper.bulkInsert("terminos", stringBuilder.toString(), statement);
             connection.close();
 
         } catch (SQLException exception) {
