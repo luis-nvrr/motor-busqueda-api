@@ -7,18 +7,19 @@ public class MainBuscar {
 
     public static void main(String[] args) {
         GestorBusqueda gestorBusqueda = new GestorBusqueda();
-        gestorBusqueda.recuperarVocabulario();
 
-        String terminos = "prueba";
+        String terminos = "estonoexiste";
+        System.out.println(System.getenv("DIRECTORIO_DOCUMENTOS"));
 
         try {
-            gestorBusqueda.buscar(terminos);
+            gestorBusqueda.buscarTerminos(terminos);
         } catch (TerminoNoEncontradoException e) {
             e.printStackTrace();
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-        //System.out.println(gestorBusqueda.mostrarDocumentosRecuperados());
-        System.out.println(gestorBusqueda.mostrarDocumentos());
         System.out.println(gestorBusqueda.mostrarCantidadTerminosVocabulario());
     }
 }

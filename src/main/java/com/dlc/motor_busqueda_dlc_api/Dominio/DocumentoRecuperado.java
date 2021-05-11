@@ -37,14 +37,7 @@ public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
         return indiceRelevancia;
     }
 
-    public String getTexto(){
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return "";
-    }
+
 
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();

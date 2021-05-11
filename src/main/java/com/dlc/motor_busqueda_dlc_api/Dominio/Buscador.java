@@ -5,20 +5,22 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Buscador {
-    private Vocabulario vocabulario;
-    private List<DocumentoRecuperado> documentosRecuperados;
-    private PosteoRepository posteoRepository;
-    private int CANTIDAD_DOCUMENTOS = 5;
+    private final Vocabulario vocabulario;
+    private List<DocumentoRecuperado> documentosRanking;
+    private final PosteoRepository posteoRepository;
+    private final int CANTIDAD_DOCUMENTOS = 5;
 
     public Buscador(Vocabulario vocabulario, PosteoRepository posteoRepository){
         this.vocabulario = vocabulario;
         this.posteoRepository = posteoRepository;
     }
 
-    public void buscar(String terminos) throws TerminoNoEncontradoException { // TODO fix da error cuando al menos un termino no es encontrado
-        this.documentosRecuperados = new ArrayList<>();
-        String terminosSeparados[] =  FormatedorEntrada.formatear(terminos);
+    public void buscar(String terminos) throws TerminoNoEncontradoException {
+        this.documentosRanking = new ArrayList<>();
+        String[] terminosSeparados =  FormatedorEntrada.formatear(terminos);
         List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados,posteoRepository);
+
+        if(terminosOrdenados.isEmpty()) throw new TerminoNoEncontradoException();
 
         for(Termino termino: terminosOrdenados){
             agregarAlRankingDocumentosDelTermino(termino);
@@ -26,9 +28,7 @@ public class Buscador {
         ordenarListadoDescendente();
     }
 
-
-
-    public List<DocumentoRecuperado> getDocumentosRecuperados(){return documentosRecuperados;}
+    public List<DocumentoRecuperado> getDocumentosRanking(){return documentosRanking;}
 
     private void agregarAlRankingDocumentosDelTermino(Termino termino){
         List<Posteo> posteos = termino.getPosteos();
@@ -45,13 +45,15 @@ public class Buscador {
             double indiceRelevancia = (double) posteo.getFrecuenciaTermino() *
                     (Math.log10((double)vocabulario.getCantidadDocumentos() / (double)termino.getCantidadDocumentos()));
             documentoRecuperado.sumarRelevancia(indiceRelevancia);
+
+            iteracion++;
         }
     }
 
     private DocumentoRecuperado buscarDocumentoEnElRanking(Documento documento){
 
-        for (DocumentoRecuperado documentoRecuperado : documentosRecuperados) {
-            if (documentoRecuperado.equals(documento.getNombre())) {
+        for (DocumentoRecuperado documentoRecuperado : documentosRanking) {
+            if (documentoRecuperado.getNombre().equals(documento.getNombre())) {
                 return documentoRecuperado;
             }
         }
@@ -62,15 +64,17 @@ public class Buscador {
         String path = documento.getPath();
         String nombre = documento.getNombre();
         DocumentoRecuperado documentoRecuperado = new DocumentoRecuperado(path, nombre);
-        this.documentosRecuperados.add(documentoRecuperado);
+        this.documentosRanking.add(documentoRecuperado);
 
         return documentoRecuperado;
     }
 
     private void ordenarListadoDescendente(){
-        this.documentosRecuperados.sort(DocumentoRecuperado::compareTo);
+        this.documentosRanking.sort(DocumentoRecuperado::compareTo);
     }
 
+
+    /*
     public String mostrarDocumentosRecuperados(){
         Iterator<DocumentoRecuperado> it = documentosRecuperados.iterator();
         StringBuilder stringBuilder = new StringBuilder();
@@ -80,5 +84,5 @@ public class Buscador {
             stringBuilder.append(documentoRecuperado.toString());
         }
         return stringBuilder.toString();
-    }
+    }*/
 }

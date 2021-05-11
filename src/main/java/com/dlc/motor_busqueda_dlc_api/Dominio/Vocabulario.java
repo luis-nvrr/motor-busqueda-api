@@ -26,7 +26,7 @@ public class Vocabulario {
     public void agregarDocumento(String nombre, String path){
         if(this.tieneDocumento(nombre)){ return; }
 
-        Documento documento = new Documento(nombre, path); // TODO agregar link
+        Documento documento = new Documento(nombre, path);
         this.documentos.put(nombre, documento);
     }
 
@@ -34,78 +34,40 @@ public class Vocabulario {
         Termino recuperado = terminos.get(termino);
         Documento documento = documentos.get(documentoString);
 
-        if (recuperado == null) { agregarInexistente(termino, documento); }
+        if (recuperado == null) { agregarTerminoInexistente(termino, documento); }
         else{
-            actualizarExistente(recuperado, documento);
+            actualizarTerminoExistente(recuperado, documento);
         }
     }
 
-    private void actualizarExistente(Termino termino, Documento documento){
+    private void actualizarTerminoExistente(Termino termino, Documento documento){
         termino.agregarPosteo(documento);
-        agregarAVocabulario(termino.getTermino(), termino);
+        agregarTerminoAVocabulario(termino.getTerminoAsString(), termino);
     }
-    private void agregarInexistente(String termino, Documento documento){
+    private void agregarTerminoInexistente(String termino, Documento documento){
         Termino nuevo = new Termino(termino);
         nuevo.agregarPosteo(documento);
-        agregarAVocabulario(termino, nuevo);
+        agregarTerminoAVocabulario(termino, nuevo);
     }
 
-    private void agregarAVocabulario(String key, Termino termino){
+    private void agregarTerminoAVocabulario(String key, Termino termino){
         this.terminos.put(key, termino);
     }
 
-    public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository) throws TerminoNoEncontradoException {
+    public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository) {
         List<Termino> terminosOrdenados = new ArrayList<>();
 
         for(String terminoString : terminosString){
             Termino termino = this.terminos.get(terminoString);
+
+            if(termino == null) {continue;}
+
             termino.setPosteos(posteoRepository.getAllPosteosByTermino(terminoString, documentos));
             terminosOrdenados.add(termino);
         }
 
         terminosOrdenados.sort(Termino::compareTo);
         return terminosOrdenados;
-    }
-
-    public String mostrarTerminos(){
-        Iterator<Map.Entry<String, Termino>> it = terminos.entrySet().iterator();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while(it.hasNext()) {
-            Map.Entry<String, Termino> entry = it.next();
-            stringBuilder.append("termino: ");
-            stringBuilder.append(entry.getKey());
-            stringBuilder.append("\n");
-        }
-
-        return stringBuilder.toString();
-    }
-
-    public String mostrarOrdenPosteo(){
-        Iterator<Map.Entry<String, Termino>> it = terminos.entrySet().iterator();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while(it.hasNext()) {
-            Map.Entry<String, Termino> entry = it.next();
-            stringBuilder.append(entry.getValue().mostrarOrdenPosteo());
-        }
-
-        return stringBuilder.toString();
-    }
-
-    public String mostrarDocumentos(){
-        Iterator<Map.Entry<String, Documento>> it = documentos.entrySet().iterator();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while(it.hasNext()){
-            Map.Entry<String, Documento> entry = it.next();
-            Documento documento = entry.getValue();
-            stringBuilder.append("documento: ").append(documento.getNombre())
-                    .append(" ").append("path: ").append(documento.getPath())
-                    .append("\n");
-        }
-
-        return stringBuilder.toString();
     }
 
     public void bulkSaveTerminos(TerminoRepository terminoRepository){
@@ -150,7 +112,42 @@ public class Vocabulario {
         return documento.getPath();
     }
 
-    public void ordenarVocabulario(){
+    public String mostrarTextoDeDocumento(String documento) throws DocumentoNoEncontradoException {
+        Documento buscado = this.documentos.get(documento);
+        if(buscado == null){ throw new DocumentoNoEncontradoException();}
+        return buscado.getTexto();
+    }
+
+    public String[] mostrarNombresDeDocumentos(){
+        return documentosToStringArray();
+    }
+
+    public String obtenerNombreDelUltimoDocumento(){
+        return documentosToStringArray()[0];
+    }
+
+    private String[] documentosToStringArray(){
+        return this.documentos.keySet().toArray(new String[documentos.size()]);
+    }
+
+    public String[] obtenerUltimosTerminosString(){
+        return this.terminos.keySet().toArray(new String[terminos.size()]);
+    }
+
+    public void actualizarDocumento(String documentoString, DocumentoRepository documentoRepository){
+        Documento documentoNuevo = documentoRepository.getDocumento(documentoString);
+        this.documentos.put(documentoString, documentoNuevo);
+    }
+
+    public void actualizarTerminos(String[] terminosString, TerminoRepository terminoRepository){
+        List<Termino> terminosNuevos = terminoRepository.getTerminos(terminosString);
+        for (Termino terminoNuevo: terminosNuevos){
+            this.terminos.put(terminoNuevo.getTerminoAsString(), terminoNuevo);
+        }
+    }
+
+    // TODO borrar?
+    public void ordenarTerminos(){
         this.terminos = MapUtil.sortByKey(terminos);
     }
 
@@ -158,7 +155,7 @@ public class Vocabulario {
         this.documentos = MapUtil.sortByKey(documentos);
     }
 
-    public void ordenarTerminos(){
+    public void ordenarPosteos(){
 
         for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
             Termino termino = entry.getValue();
@@ -175,8 +172,50 @@ public class Vocabulario {
             for (Map.Entry<K, V> entry : list) {
                 result.put(entry.getKey(), entry.getValue());
             }
-
             return result;
         }
     }
+
+    /*
+    public String mostrarTerminos(){
+        Iterator<Map.Entry<String, Termino>> it = terminos.entrySet().iterator();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while(it.hasNext()) {
+            Map.Entry<String, Termino> entry = it.next();
+            stringBuilder.append("termino: ");
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public String mostrarOrdenPosteo(){
+        Iterator<Map.Entry<String, Termino>> it = terminos.entrySet().iterator();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while(it.hasNext()) {
+            Map.Entry<String, Termino> entry = it.next();
+            stringBuilder.append(entry.getValue().mostrarOrdenPosteo());
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public String mostrarDocumentos(){
+        Iterator<Map.Entry<String, Documento>> it = documentos.entrySet().iterator();
+        StringBuilder stringBuilder = new StringBuilder();
+
+        while(it.hasNext()){
+            Map.Entry<String, Documento> entry = it.next();
+            Documento documento = entry.getValue();
+            stringBuilder.append("documento: ").append(documento.getNombre())
+                    .append(" ").append("path: ").append(documento.getPath())
+                    .append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
+     */
 }

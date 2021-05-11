@@ -1,11 +1,10 @@
 package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
 import java.sql.*;
-
 public class MySQLConnection {
-    public static final String USER = "root";
-    public  static final String PASSWORD = "2ANDahalfmen";
-    public static String dbURL = "jdbc:mysql://localhost:3306/motor-busqueda-dlc"
+    public static final String USER = System.getenv("USERNAME");
+    public  static final String PASSWORD = System.getenv("PASSWORD");
+    public static String dbURL = "jdbc:mysql://localhost:3306/" + System.getenv("DATABASE")
             + "?verifyServerCertificate=false"
             + "&useSSL=false"
             + "&requireSSL=false"

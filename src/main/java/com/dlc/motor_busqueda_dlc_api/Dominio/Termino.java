@@ -31,7 +31,7 @@ public class Termino implements Comparable<Termino>{
         this.posteos = posteos;
     }
 
-    public String getTermino() {
+    public String getTerminoAsString() {
         return termino;
     }
 
@@ -104,6 +104,6 @@ public class Termino implements Comparable<Termino>{
 
 
     public void ordenarPosteos(){
-        Collections.sort(posteos);
+        posteos.sort(Comparator.comparing(Posteo::obtenerNombreDocumento));
     }
 }

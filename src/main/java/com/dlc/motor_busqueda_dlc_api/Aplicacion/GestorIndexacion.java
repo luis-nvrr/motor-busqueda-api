@@ -12,47 +12,41 @@ public class GestorIndexacion {
 
     Indexador indexador;
     Vocabulario vocabulario;
-    StopWord stopWord;
     TerminoRepository terminoRepository;
     PosteoRepository posteoRepository;
     DocumentoRepository documentoRepository;
+    GestorBusqueda gestorBusqueda;
 
-    public GestorIndexacion(){
+    public GestorIndexacion(GestorBusqueda gestorBusqueda){
+        this.gestorBusqueda = gestorBusqueda;
         this.vocabulario = new Vocabulario();
-        this.stopWord = new StopWord();
-        this.indexador = new Indexador(vocabulario, stopWord);
+        this.indexador = new Indexador(vocabulario);
         this.terminoRepository = new MySQLTerminoRepository();
         this.posteoRepository = new MySQLPosteoRepository();
         this.documentoRepository = new MySQLDocumentoRepository();
     }
 
-    public void cargarStopWords(String archivoPath){
-        IArchivo archivo = new ArchivoLocal(archivoPath);
-        indexador.cargarStopWords(archivo);
+    public GestorIndexacion(){
+        this(null);
     }
 
-    public void cargarVocabularioArchivo(String archivoPath){
+    public void cargarVocabularioDeArchivo(String archivoPath){
         IArchivo archivo = new ArchivoLocal(archivoPath);
-        indexador.cargarVocabularioArchivo(archivo);
+        this.indexador.cargarVocabularioDeArchivo(archivo);
         persistir();
+        actualizarVocabulario();
     }
 
-    public void cargarVocabularioDirectorio(String directorioPath){
+    public void cargarVocabularioDeDirectorio(String directorioPath){
         IDirectorio directorio = new DirectorioLocal(directorioPath);
-        indexador.cargarVocabularioDirectorio(directorio);
+        this.indexador.cargarVocabularioDeDirectorio(directorio);
         persistirBulk();
     }
 
-    public String mostrarVocabulario(){
-        return vocabulario.mostrarTerminos();
-    }
-
-    public int mostrarCantidadTerminosVocabulario(){
-        return vocabulario.cantidadTerminos();
-    }
-
-    public String mostrarOrdenPosteo(){
-        return vocabulario.mostrarOrdenPosteo();
+    private void actualizarVocabulario(){
+        String documento = vocabulario.obtenerNombreDelUltimoDocumento();
+        String[] terminos = vocabulario.obtenerUltimosTerminosString();
+        this.gestorBusqueda.actualizarVocabularioLocal(documento, terminos);
     }
 
     private void persistir(){
@@ -62,11 +56,23 @@ public class GestorIndexacion {
     }
 
     private void persistirBulk(){
-        vocabulario.ordenarVocabulario();
-        vocabulario.ordenarDocumentos();
         vocabulario.ordenarTerminos();
+        vocabulario.ordenarDocumentos();
+        vocabulario.ordenarPosteos();
         vocabulario.bulkSaveDocumentos(documentoRepository);
         vocabulario.bulkSaveTerminos(terminoRepository);
         vocabulario.bulkSavePosteos(posteoRepository);
     }
+
+    public int mostrarCantidadTerminosVocabulario(){
+        return vocabulario.cantidadTerminos();
+    }
+
+    /*public String mostrarVocabulario(){
+        return vocabulario.mostrarTerminos();
+    }
+
+    public String mostrarOrdenPosteo(){
+        return vocabulario.mostrarOrdenPosteo();
+    }*/
 }

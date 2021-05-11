@@ -22,6 +22,7 @@ public class GestorBusqueda {
         this.terminoRepository = new MySQLTerminoRepository();
         this.vocabulario = new Vocabulario();
         this.buscador = new Buscador(vocabulario, posteoRepository);
+        recuperarVocabulario();
     }
 
     public void recuperarVocabulario(){
@@ -33,12 +34,30 @@ public class GestorBusqueda {
         return vocabulario.getPathDocumento(documento);
     }
 
-    public void buscar(String terminos) throws TerminoNoEncontradoException {
+    public String buscarDocumento(String documento) throws DocumentoNoEncontradoException {
+        return vocabulario.mostrarTextoDeDocumento(documento);
+    }
+
+    public void buscarTerminos(String terminos) throws TerminoNoEncontradoException {
         this.buscador.buscar(terminos);
     }
 
-    public List<DocumentoRecuperado> getDocumentosRecuperados(){return this.buscador.getDocumentosRecuperados();}
+    public void actualizarVocabularioLocal(String documento, String[] terminos){
+        vocabulario.actualizarDocumento(documento, documentoRepository);
+        vocabulario.actualizarTerminos(terminos, terminoRepository);
+    }
 
+    public String[] buscarNombresDocumentos(){
+        return this.vocabulario.mostrarNombresDeDocumentos();
+    }
+
+    public List<DocumentoRecuperado> getDocumentosRecuperados(){return this.buscador.getDocumentosRanking();}
+
+    public int mostrarCantidadTerminosVocabulario(){
+        return vocabulario.cantidadTerminos();
+    }
+
+    /*
     public String mostrarDocumentosRecuperados() {
         return buscador.mostrarDocumentosRecuperados();
     }
@@ -46,8 +65,5 @@ public class GestorBusqueda {
     public String mostrarDocumentos(){
         return vocabulario.mostrarDocumentos();
     }
-
-    public int mostrarCantidadTerminosVocabulario(){
-        return vocabulario.cantidadTerminos();
-    }
+     */
 }

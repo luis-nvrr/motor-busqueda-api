@@ -3,14 +3,15 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
 
-import java.io.*;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class MySQLDocumentoRepository implements DocumentoRepository {
 
     private Connection connection;
+    private static Logger logger = Logger.getLogger("global");
 
     @Override
     public void saveDocumentos(Map<String, Documento> documentos) {
@@ -32,14 +33,13 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                 query.append("('").append(nombre).append("','")
                         .append(path).append("'),");
             }
-            query.setCharAt(query.length()-1, ' ');
-            query.append("ON DUPLICATE KEY UPDATE nombre=nombre");
+            query.setCharAt(query.length()-1, ';');
 
             statement.execute(query.toString());
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
     }
 
@@ -62,12 +62,11 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                         .append("\n");
             }
 
-            String query = BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString());
-            statement.executeQuery(query);
+            BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString(), statement);
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
     }
 
@@ -87,11 +86,33 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                 documentos.put(nombre, documento);
             }
             connection.close();
+            return documentos;
         }
         catch (SQLException exception){
-            exception.printStackTrace();
+            logger.info(exception.getMessage());
         }
+        return null;
+    }
 
-        return documentos;
+    @Override
+    public Documento getDocumento(String documentoString) {
+        try{
+            connection = MySQLConnection.conectar();
+            Statement statement = connection.createStatement();
+            String query = String.format("SELECT * FROM Documentos WHERE nombre LIKE '%s'", documentoString);
+            ResultSet resultSet = statement.executeQuery(query);
+
+            resultSet.next();
+            String nombre = resultSet.getString("nombre");
+            String path = resultSet.getString("path");
+            Documento documento= new Documento(nombre, path);
+
+            connection.close();
+            return documento;
+        }
+        catch (SQLException exception){
+            logger.info(exception.getMessage());
+        }
+        return null;
     }
 }
