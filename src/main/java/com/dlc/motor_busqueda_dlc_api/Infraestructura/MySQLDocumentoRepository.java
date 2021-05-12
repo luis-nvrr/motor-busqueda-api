@@ -10,13 +10,14 @@ import java.util.logging.Logger;
 
 public class MySQLDocumentoRepository implements DocumentoRepository {
 
+    private MySQLConnection database = new MySQLConnection();
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
 
     @Override
     public void saveDocumentos(Map<String, Documento> documentos) {
         try {
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -37,6 +38,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
 
             statement.execute(query.toString());
             connection.close();
+            statement.close();
 
         } catch (SQLException exception) {
             logger.info(exception.getMessage());
@@ -46,7 +48,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     @Override
     public void bulkSaveDocumentos(Map<String, Documento> documentos) {
         try {
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -64,6 +66,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
 
             BulkInsertHelper.bulkInsert("documentos", stringBuilder.toString(), statement);
             connection.close();
+            statement.close();
 
         } catch (SQLException exception) {
             logger.info(exception.getMessage());
@@ -73,7 +76,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     public Map<String, Documento> getAllDocumentos(){
         Map<String, Documento> documentos = new Hashtable<>();
         try{
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
             Statement statement = connection.createStatement();
             String query = "SELECT * FROM Documentos";
             ResultSet resultSet = statement.executeQuery(query);
@@ -86,6 +89,8 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
                 documentos.put(nombre, documento);
             }
             connection.close();
+            statement.close();
+            resultSet.close();
             return documentos;
         }
         catch (SQLException exception){
@@ -97,7 +102,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     @Override
     public Documento getDocumento(String documentoString) {
         try{
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Documentos WHERE nombre LIKE '%s'", documentoString);
             ResultSet resultSet = statement.executeQuery(query);
@@ -108,6 +113,8 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
             Documento documento= new Documento(nombre, path);
 
             connection.close();
+            statement.close();
+            resultSet.close();
             return documento;
         }
         catch (SQLException exception){

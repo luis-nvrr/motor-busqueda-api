@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 public class MySQLTerminoRepository implements TerminoRepository {
 
+    private MySQLConnection database = new MySQLConnection();
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
 
@@ -19,7 +20,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public Map<String, Termino> getAllTerminos() {
         Map<String, Termino> terminos = new Hashtable<>();
         try{
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -36,6 +37,8 @@ public class MySQLTerminoRepository implements TerminoRepository {
                 terminos.put(palabra, termino);
             }
             connection.close();
+            statement.close();
+            resultSet.close();
         }
         catch (SQLException exception){
             logger.info(exception.getMessage());
@@ -48,7 +51,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public List<Termino> getTerminos(String[] terminosString) {
         List<Termino> terminos = new ArrayList<>();
         try{
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -74,6 +77,8 @@ public class MySQLTerminoRepository implements TerminoRepository {
                 terminos.add(termino);
             }
             connection.close();
+            statement.close();
+            resultSet.close();
         }
         catch (SQLException exception){
             logger.info(exception.getMessage());
@@ -86,7 +91,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     @Override
     public void saveTerminos(Map<String, Termino> terminos) {
         try {
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
             Statement statement = connection.createStatement();
             StringBuilder query =
                     new StringBuilder("INSERT INTO Terminos " +
@@ -108,6 +113,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
 
             statement.execute(query.toString());
             connection.close();
+            statement.close();
 
         } catch (SQLException exception) {
             logger.info(exception.getMessage());
@@ -118,7 +124,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public void bulkSaveTerminos(Map<String, Termino> terminos) {
 
         try {
-            connection = MySQLConnection.conectar();
+            connection = database.conectar();
             Statement statement = connection.createStatement();
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -135,6 +141,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
 
             BulkInsertHelper.bulkInsert("terminos", stringBuilder.toString(), statement);
             connection.close();
+            statement.close();
 
         } catch (SQLException exception) {
             logger.info(exception.getMessage());

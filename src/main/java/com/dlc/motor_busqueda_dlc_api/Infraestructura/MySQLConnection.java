@@ -1,6 +1,9 @@
 package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 import java.sql.*;
+
 public class MySQLConnection {
     public static final String USER = System.getenv("USERNAME");
     public  static final String PASSWORD = System.getenv("PASSWORD");
@@ -10,12 +13,16 @@ public class MySQLConnection {
             + "&requireSSL=false"
             + "&sslMode=disabled";
 
-    public static Connection conectar(){
+    public Connection conectar(){
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.
-                    getConnection(MySQLConnection.dbURL,
-                            MySQLConnection.USER, MySQLConnection.PASSWORD);
+            //Class.forName("com.mysql.cj.jdbc.Driver");
+            //return DriverManager.
+            //        getConnection(MySQLConnection.dbURL,
+            //                MySQLConnection.USER, MySQLConnection.PASSWORD);
+            InitialContext ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup("jdbc/MySQLPool");
+            Connection conn = ds.getConnection();
+            return conn;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
