@@ -3,6 +3,8 @@ package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoNoEncontradoException;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRecuperado;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoNoEncontradoException;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -98,18 +100,18 @@ public class DocumentosController {
     }
 
     @POST
-    @Path("/documentos")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Path("documentos")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadFile(final MimeMultipart file) {
-        if (file == null)
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("nombre de archivo no válido").build();
-
+    public Response uploadFile(MimeMultipart file) {
         try {
             BodyPart bodyPart = file.getBodyPart(0);
             String nombreDocumento = bodyPart.getFileName();
             String documentoPath = System.getenv("DIRECTORIO_DOCUMENTOS") + nombreDocumento;
+
+            if(gestorBusqueda.existeDocumento(nombreDocumento)){
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("documento repetido").build();
+            }
 
             bodyPart.removeHeader("Content-Disposition");
             bodyPart.removeHeader("Content-Type");

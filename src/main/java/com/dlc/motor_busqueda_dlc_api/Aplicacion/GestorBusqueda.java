@@ -53,6 +53,10 @@ public class GestorBusqueda {
         return vocabulario.cantidadTerminos();
     }
 
+    public boolean existeDocumento(String nombreDocumento){
+        return this.vocabulario.existeDocumento(nombreDocumento);
+    }
+
     /*
     public String mostrarDocumentosRecuperados() {
         return buscador.mostrarDocumentosRecuperados();

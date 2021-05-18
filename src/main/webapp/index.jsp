@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <title>JSP - Motor de Busqueda API</title>
 </head>
 <body>
 <h1><%= "Funciona!" %></h1>
@@ -14,5 +14,5 @@
     <li>GET /api/terminos/{termino}</li>
     <li>POST /api/documentos</li>
 </ul>
-</body>>
+</body>
 </html>

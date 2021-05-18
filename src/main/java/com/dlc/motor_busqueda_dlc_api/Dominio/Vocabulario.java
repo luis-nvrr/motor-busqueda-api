@@ -30,6 +30,10 @@ public class Vocabulario {
         this.documentos.put(nombre, documento);
     }
 
+    public boolean existeDocumento(String nombreDocumento){
+        return this.documentos.get(nombreDocumento) != null;
+    }
+
     public void agregarTermino(String termino, String documentoString){
         Termino recuperado = terminos.get(termino);
         Documento documento = documentos.get(documentoString);
