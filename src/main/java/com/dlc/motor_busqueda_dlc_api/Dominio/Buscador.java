@@ -61,9 +61,8 @@ public class Buscador {
     }
 
     private DocumentoRecuperado crearNuevoDocumento(Documento documento){
-        String path = documento.getPath();
         String nombre = documento.getNombre();
-        DocumentoRecuperado documentoRecuperado = new DocumentoRecuperado(path, nombre);
+        DocumentoRecuperado documentoRecuperado = new DocumentoRecuperado(nombre);
         this.documentosRanking.add(documentoRecuperado);
 
         return documentoRecuperado;

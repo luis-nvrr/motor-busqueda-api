@@ -1,5 +1,6 @@
 package com.dlc.motor_busqueda_dlc_api.Dominio;
 
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,15 +40,6 @@ public class Documento {
         int result = nombre.hashCode();
         result = 31 * result + path.hashCode();
         return result;
-    }
-
-    public String getTexto(){
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-        return null;
     }
 }
 

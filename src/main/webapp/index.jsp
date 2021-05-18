@@ -5,8 +5,14 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
+<h1><%= "Funciona!" %></h1>
 <br/>
-</body>
+<p> Se pueden hacer requests a los endpoints:</p>
+<ul>
+    <li>GET /api/documentos</li>
+    <li>GET /api/documentos/{nombre}</li>
+    <li>GET /api/terminos/{termino}</li>
+    <li>POST /api/documentos</li>
+</ul>
+</body>>
 </html>

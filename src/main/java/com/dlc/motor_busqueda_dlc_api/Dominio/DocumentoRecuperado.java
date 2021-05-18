@@ -6,12 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
-    private String path;
     private String nombre;
     private double indiceRelevancia;
 
-    public DocumentoRecuperado(String path, String nombre){
-        this.path = path;
+    public DocumentoRecuperado(String nombre){
         this.nombre = nombre;
         this.indiceRelevancia = 0;
     }
@@ -23,10 +21,6 @@ public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
     @Override
     public int compareTo(DocumentoRecuperado o) {
         return (int)o.indiceRelevancia - (int)this.indiceRelevancia;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     public String getNombre() {
@@ -41,8 +35,7 @@ public class DocumentoRecuperado implements Comparable<DocumentoRecuperado> {
 
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("path: ").append(path).append("\n")
-                .append("nombre: ").append(nombre).append("\n")
+        stringBuilder.append("nombre: ").append(nombre).append("\n")
                 .append("indice de relevancia: ").append(indiceRelevancia).append("\n");
 
         return stringBuilder.toString();

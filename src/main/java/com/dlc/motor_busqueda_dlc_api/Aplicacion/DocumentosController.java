@@ -14,16 +14,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Path("/")
 public class DocumentosController {
 
     @Inject
     private GestorBusqueda gestorBusqueda;
-    private static Logger logger = Logger.getLogger("global");
 
-    @Path("download/{documento}")
+    @Path("documentos/{documento}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getDocumentoFile(@PathParam("documento") String documento){
@@ -38,50 +36,26 @@ public class DocumentosController {
                     .status(Response.Status.NOT_FOUND)
                     .build();
         }
-
-    }
-
-    @Path("documentos/{documento}")
-    @GET
-    public Response getDocumentoText(@PathParam("documento") String documento){
-        try {
-            JSONObject obj = new JSONObject();
-            obj.put("nombre", documento);
-            obj.put("texto", gestorBusqueda.buscarDocumento(documento));
-
-            return Response
-                    .status(Response.Status.OK)
-                    .entity(obj.toJSONString())
-                    .type(MediaType.APPLICATION_JSON)
-                    .build();
-        } catch (DocumentoNoEncontradoException e) {
-            return Response
-                    .status(Response.Status.NOT_FOUND)
-                    .build();
-        }
-
     }
 
     @Path("documentos")
     @GET
     public Response getDocumentos(){
         JSONArray list = new JSONArray();
-        JSONObject obj = new JSONObject();
-
         String[] nombresDocumentos = gestorBusqueda.buscarNombresDocumentos();
-        for(String nombre : nombresDocumentos){
-            list.add(nombre);
-        }
 
-        obj.put("documentos", list);
+        for(String nombre : nombresDocumentos){
+            JSONObject obj = new JSONObject();
+            obj.put("nombre", nombre);
+            list.add(obj);
+        }
 
         return Response
                 .status(Response.Status.OK)
-                .entity(obj.toJSONString())
+                .entity(list.toJSONString())
                 .type(MediaType.APPLICATION_JSON)
                 .build();
     }
-
 
     @Path("terminos/{termino}")
     @GET
@@ -97,7 +71,6 @@ public class DocumentosController {
                 JSONObject obj = new JSONObject();
                 obj.put("nombre", documentoRecuperado.getNombre());
                 obj.put("indice", documentoRecuperado.getIndiceRelevancia());
-                obj.put("ubicacion", documentoRecuperado.getPath());
                 list.add(obj);
             }
 

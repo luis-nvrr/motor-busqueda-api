@@ -34,10 +34,6 @@ public class GestorBusqueda {
         return vocabulario.getPathDocumento(documento);
     }
 
-    public String buscarDocumento(String documento) throws DocumentoNoEncontradoException {
-        return vocabulario.mostrarTextoDeDocumento(documento);
-    }
-
     public void buscarTerminos(String terminos) throws TerminoNoEncontradoException {
         this.buscador.buscar(terminos);
     }

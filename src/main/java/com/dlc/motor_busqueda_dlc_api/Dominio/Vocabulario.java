@@ -112,12 +112,6 @@ public class Vocabulario {
         return documento.getPath();
     }
 
-    public String mostrarTextoDeDocumento(String documento) throws DocumentoNoEncontradoException {
-        Documento buscado = this.documentos.get(documento);
-        if(buscado == null){ throw new DocumentoNoEncontradoException();}
-        return buscado.getTexto();
-    }
-
     public String[] mostrarNombresDeDocumentos(){
         return documentosToStringArray();
     }
@@ -146,7 +140,6 @@ public class Vocabulario {
         }
     }
 
-    // TODO borrar?
     public void ordenarTerminos(){
         this.terminos = MapUtil.sortByKey(terminos);
     }
