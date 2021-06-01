@@ -55,7 +55,6 @@ public class MySQLPosteoRepository implements PosteoRepository {
                     new StringBuilder("INSERT INTO Posteos " +
                             "(nombre, termino, frecuenciaTermino) VALUES ");
 
-
             for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
                 String palabra = entry.getKey();
                 Termino termino = entry.getValue();
@@ -85,7 +84,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void bulkSavePosteos(Map<String, Termino> terminos) {
         try {
-            connection = database.conectar();
+            connection = database.conectarJDBC();
 
             assert connection != null;
             Statement statement = connection.createStatement();

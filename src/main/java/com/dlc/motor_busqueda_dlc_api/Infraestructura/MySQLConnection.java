@@ -15,16 +15,26 @@ public class MySQLConnection {
 
     public Connection conectar(){
         try {
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-            //return DriverManager.
-            //        getConnection(MySQLConnection.dbURL,
-            //                MySQLConnection.USER, MySQLConnection.PASSWORD);
+
             InitialContext ctx = new InitialContext();
             DataSource ds = (DataSource) ctx.lookup("jdbc/MySQLPool");
             Connection conn = ds.getConnection();
             return conn;
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Connection conectarJDBC(){
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.
+                    getConnection(MySQLConnection.dbURL,
+                            MySQLConnection.USER, MySQLConnection.PASSWORD);
+        }
+        catch(Exception e){
+            e.printStackTrace();
         }
         return null;
     }

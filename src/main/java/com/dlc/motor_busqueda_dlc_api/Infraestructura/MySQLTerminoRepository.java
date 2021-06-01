@@ -4,10 +4,7 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoRepository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class MySQLTerminoRepository implements TerminoRepository {
@@ -124,7 +121,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public void bulkSaveTerminos(Map<String, Termino> terminos) {
 
         try {
-            connection = database.conectar();
+            connection = database.conectarJDBC();
             Statement statement = connection.createStatement();
             StringBuilder stringBuilder = new StringBuilder();
 

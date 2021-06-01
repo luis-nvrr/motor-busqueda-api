@@ -48,7 +48,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     @Override
     public void bulkSaveDocumentos(Map<String, Documento> documentos) {
         try {
-            connection = database.conectar();
+            connection = database.conectarJDBC();
 
             assert connection != null;
             Statement statement = connection.createStatement();
