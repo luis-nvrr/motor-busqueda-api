@@ -3,8 +3,6 @@ package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoNoEncontradoException;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRecuperado;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoNoEncontradoException;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -59,7 +57,7 @@ public class DocumentosController {
                 .build();
     }
 
-    @Path("terminos/{termino}")
+    @Path("documentos/terminos/{termino}")
     @GET
     public Response getDocumentosByTermino(@PathParam("termino") String termino){
 

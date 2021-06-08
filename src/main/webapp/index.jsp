@@ -11,7 +11,7 @@
 <ul>
     <li>GET /api/documentos</li>
     <li>GET /api/documentos/{nombre}</li>
-    <li>GET /api/terminos/{termino}</li>
+    <li>GET /api/documentos/terminos/{termino}</li>
     <li>POST /api/documentos</li>
 </ul>
 </body>
