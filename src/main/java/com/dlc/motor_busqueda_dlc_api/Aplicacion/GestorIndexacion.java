@@ -44,7 +44,7 @@ public class GestorIndexacion {
     }
 
     private void actualizarVocabulario(){
-        String documento = vocabulario.obtenerNombreDelUltimoDocumento();
+        String documento = vocabulario.obtenerNombreDelPrimerDocumento();
         String[] terminos = vocabulario.obtenerUltimosTerminosString();
         this.gestorBusqueda.actualizarVocabularioLocal(documento, terminos);
     }

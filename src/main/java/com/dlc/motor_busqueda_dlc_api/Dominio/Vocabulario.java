@@ -11,18 +11,22 @@ public class Vocabulario {
         this.documentos = new Hashtable<>();
     }
 
+    // cantidad de terminos en el vocabulario
     public int cantidadTerminos(){
         return terminos.size();
     }
 
-    private boolean tieneDocumento(String nombre){
+    // retorna true si ya existe un documento en el vocabulario
+    public boolean tieneDocumento(String nombre){
         return this.documentos.get(nombre) != null;
     }
 
+    // retorna la cantida de documentos del vocabulario
     public int getCantidadDocumentos(){
         return this.documentos.size();
     }
 
+    // agrega un documento inexistente a la tabla de documentos
     public void agregarDocumento(String nombre, String path){
         if(this.tieneDocumento(nombre)){ return; }
 
@@ -30,34 +34,25 @@ public class Vocabulario {
         this.documentos.put(nombre, documento);
     }
 
-    public boolean existeDocumento(String nombreDocumento){
-        return this.documentos.get(nombreDocumento) != null;
-    }
-
+    // agrega un Termino al vocabulario
+    // si ya existia, actualiza la lista de posteos
+    // si no existe, crea el nuevo Termino
     public void agregarTermino(String termino, String documentoString){
         Termino recuperado = terminos.get(termino);
         Documento documento = documentos.get(documentoString);
 
-        if (recuperado == null) { agregarTerminoInexistente(termino, documento); }
-        else{
-            actualizarTerminoExistente(recuperado, documento);
-        }
+        if (recuperado == null) { recuperado = new Termino(termino); }
+        agregarDocumentoAPosteo(recuperado, documento);
     }
 
-    private void actualizarTerminoExistente(Termino termino, Documento documento){
+    // actualiza la lista de posteos del termino, agregando el Documento
+    // y guardandolo en la tabla de terminos
+    private void agregarDocumentoAPosteo(Termino termino, Documento documento){
+        this.terminos.putIfAbsent(termino.getTerminoAsString(), termino);
         termino.agregarPosteo(documento);
-        agregarTerminoAVocabulario(termino.getTerminoAsString(), termino);
-    }
-    private void agregarTerminoInexistente(String termino, Documento documento){
-        Termino nuevo = new Termino(termino);
-        nuevo.agregarPosteo(documento);
-        agregarTerminoAVocabulario(termino, nuevo);
     }
 
-    private void agregarTerminoAVocabulario(String key, Termino termino){
-        this.terminos.put(key, termino);
-    }
-
+    // retorna la lista de objetos Terminos buscados
     public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository) {
         List<Termino> terminosOrdenados = new ArrayList<>();
 
@@ -74,38 +69,47 @@ public class Vocabulario {
         return terminosOrdenados;
     }
 
+    // guarda la tabla de terminos, indexados de un directorio
     public void bulkSaveTerminos(TerminoRepository terminoRepository){
         terminoRepository.bulkSaveTerminos(terminos);
     }
 
+    // guarda la lista de posteos de cada termino, indexado de un directorio
     public void bulkSavePosteos(PosteoRepository posteoRepository){
         posteoRepository.bulkSavePosteos(terminos);
     }
 
+    // gurda la tabla de documentos, indexados de un directorio
     public void bulkSaveDocumentos(DocumentoRepository documentoRepository){
         documentoRepository.bulkSaveDocumentos(this.documentos);
     }
 
+    // guarda la tabla de terminos, indexado de un archivo
     public void saveTerminos(TerminoRepository terminoRepository){
         terminoRepository.saveTerminos(terminos);
     }
 
+    // guarda la lista de posteos de cada termino, indexado de un archivo
     public void savePosteos(PosteoRepository posteoRepository){
         posteoRepository.savePosteos(terminos);
     }
 
+    // guarda la tabla de documentos
     public void saveDocumentos(DocumentoRepository documentoRepository){
         documentoRepository.saveDocumentos(this.documentos);
     }
 
+    // recupera la tabla de documentos
     public void getAllDocumentos(DocumentoRepository documentoRepository){
         this.documentos = documentoRepository.getAllDocumentos();
     }
 
+    // recupera la tabla de terminos
     public void getAllTerminos(TerminoRepository terminoRepository){
         this.terminos = terminoRepository.getAllTerminos();
     }
 
+    // recupera la ubicacion de un archivo pasado como parametro
     public String getPathDocumento(String documentoString) throws DocumentoNoEncontradoException {
         Documento documento = this.documentos.get(documentoString);
 
@@ -116,14 +120,17 @@ public class Vocabulario {
         return documento.getPath();
     }
 
+    // recupera los nombres de los documentos en la tabla de documentos
     public String[] mostrarNombresDeDocumentos(){
         return documentosToStringArray();
     }
 
-    public String obtenerNombreDelUltimoDocumento(){
+    // recupera el primer documento de la tabla de documentos
+    public String obtenerNombreDelPrimerDocumento(){
         return documentosToStringArray()[0];
     }
 
+    // convierte la tabla de documentos en una lista de String con los nombres
     private String[] documentosToStringArray(){
         return this.documentos.keySet().toArray(new String[documentos.size()]);
     }
@@ -132,11 +139,13 @@ public class Vocabulario {
         return this.terminos.keySet().toArray(new String[terminos.size()]);
     }
 
+    // busca en la BD un documento por nombre y lo actualiza en la Hashtable
     public void actualizarDocumento(String documentoString, DocumentoRepository documentoRepository){
         Documento documentoNuevo = documentoRepository.getDocumento(documentoString);
         this.documentos.put(documentoString, documentoNuevo);
     }
 
+    // busca en la BD un termino y lo actualiza en la Hashtable
     public void actualizarTerminos(String[] terminosString, TerminoRepository terminoRepository){
         List<Termino> terminosNuevos = terminoRepository.getTerminos(terminosString);
         for (Termino terminoNuevo: terminosNuevos){
@@ -144,14 +153,17 @@ public class Vocabulario {
         }
     }
 
+    // ordena la Hashtable de terminos
     public void ordenarTerminos(){
         this.terminos = MapUtil.sortByKey(terminos);
     }
 
+    // ordena la Hashtable de documentos
     public void ordenarDocumentos(){
         this.documentos = MapUtil.sortByKey(documentos);
     }
 
+    // ordena las listas de posteos de cada termino
     public void ordenarPosteos(){
 
         for (Map.Entry<String, Termino> entry : terminos.entrySet()) {
@@ -160,6 +172,7 @@ public class Vocabulario {
         }
     }
 
+    // ordena una Hashtable y retorna una LinkedHashMap
     private static class MapUtil {
         public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
             List<Map.Entry<K, V>> list = new ArrayList<>(map.entrySet());
@@ -173,7 +186,7 @@ public class Vocabulario {
         }
     }
 
-    /*
+    // muestra todos los terminos
     public String mostrarTerminos(){
         Iterator<Map.Entry<String, Termino>> it = terminos.entrySet().iterator();
         StringBuilder stringBuilder = new StringBuilder();
@@ -214,5 +227,4 @@ public class Vocabulario {
 
         return stringBuilder.toString();
     }
-     */
 }

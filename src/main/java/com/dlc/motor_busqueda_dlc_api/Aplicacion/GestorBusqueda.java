@@ -54,7 +54,7 @@ public class GestorBusqueda {
     }
 
     public boolean existeDocumento(String nombreDocumento){
-        return this.vocabulario.existeDocumento(nombreDocumento);
+        return this.vocabulario.tieneDocumento(nombreDocumento);
     }
 
     /*
