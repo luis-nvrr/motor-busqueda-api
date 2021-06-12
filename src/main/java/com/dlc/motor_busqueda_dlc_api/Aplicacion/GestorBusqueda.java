@@ -39,8 +39,8 @@ public class GestorBusqueda {
     }
 
     public void actualizarVocabularioLocal(String documento, String[] terminos){
-        vocabulario.actualizarDocumento(documento, documentoRepository);
-        vocabulario.actualizarTerminos(terminos, terminoRepository);
+        this.vocabulario.actualizarDocumento(documento, documentoRepository);
+        this.vocabulario.actualizarTerminos(terminos, terminoRepository);
     }
 
     public String[] buscarNombresDocumentos(){
@@ -49,15 +49,10 @@ public class GestorBusqueda {
 
     public List<DocumentoRecuperado> getDocumentosRecuperados(){return this.buscador.getDocumentosRanking();}
 
-    public int mostrarCantidadTerminosVocabulario(){
-        return vocabulario.cantidadTerminos();
-    }
-
     public boolean existeDocumento(String nombreDocumento){
         return this.vocabulario.tieneDocumento(nombreDocumento);
     }
 
-    /*
     public String mostrarDocumentosRecuperados() {
         return buscador.mostrarDocumentosRecuperados();
     }
@@ -65,5 +60,4 @@ public class GestorBusqueda {
     public String mostrarDocumentos(){
         return vocabulario.mostrarDocumentos();
     }
-     */
 }

@@ -73,9 +73,8 @@ public class Buscador {
     }
 
 
-    /*
     public String mostrarDocumentosRecuperados(){
-        Iterator<DocumentoRecuperado> it = documentosRecuperados.iterator();
+        Iterator<DocumentoRecuperado> it = documentosRanking.iterator();
         StringBuilder stringBuilder = new StringBuilder();
 
         while(it.hasNext()){
@@ -83,5 +82,5 @@ public class Buscador {
             stringBuilder.append(documentoRecuperado.toString());
         }
         return stringBuilder.toString();
-    }*/
+    }
 }

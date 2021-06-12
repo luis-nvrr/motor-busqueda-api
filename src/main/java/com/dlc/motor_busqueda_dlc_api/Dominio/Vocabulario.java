@@ -7,8 +7,8 @@ public class Vocabulario {
     private Map<String, Documento> documentos;
 
     public Vocabulario(){
-        this.terminos = new Hashtable<>();
-        this.documentos = new Hashtable<>();
+        this.terminos = new HashMap<>();
+        this.documentos = new HashMap<>();
     }
 
     // cantidad de terminos en el vocabulario
@@ -135,7 +135,7 @@ public class Vocabulario {
         return this.documentos.keySet().toArray(new String[documentos.size()]);
     }
 
-    public String[] obtenerUltimosTerminosString(){
+    public String[] obtenerTerminosString(){
         return this.terminos.keySet().toArray(new String[terminos.size()]);
     }
 

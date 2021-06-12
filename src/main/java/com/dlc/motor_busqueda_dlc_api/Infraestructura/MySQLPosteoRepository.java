@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 public class MySQLPosteoRepository implements PosteoRepository {
 
-    private MySQLConnection database = new MySQLConnection();
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
 
@@ -22,7 +21,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
         List<Posteo> posteosRecuperados = new ArrayList<>();
 
         try{
-            connection = database.conectar();
+            connection = MySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino DESC", termino);
             ResultSet resultSet = statement.executeQuery(query);
@@ -49,7 +48,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void savePosteos(Map<String, Termino> terminos) {
         try {
-            connection = database.conectar();
+            connection = MySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             StringBuilder query =
                     new StringBuilder("INSERT INTO Posteos " +
@@ -84,7 +83,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void bulkSavePosteos(Map<String, Termino> terminos) {
         try {
-            connection = database.conectarJDBC();
+            connection = MySQLConnection.conectarJDBC();
 
             assert connection != null;
             Statement statement = connection.createStatement();

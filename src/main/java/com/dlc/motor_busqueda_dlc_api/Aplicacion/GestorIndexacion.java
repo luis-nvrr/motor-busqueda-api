@@ -45,7 +45,7 @@ public class GestorIndexacion {
 
     private void actualizarVocabulario(){
         String documento = vocabulario.obtenerNombreDelPrimerDocumento();
-        String[] terminos = vocabulario.obtenerUltimosTerminosString();
+        String[] terminos = vocabulario.obtenerTerminosString();
         this.gestorBusqueda.actualizarVocabularioLocal(documento, terminos);
     }
 
@@ -67,12 +67,4 @@ public class GestorIndexacion {
     public int mostrarCantidadTerminosVocabulario(){
         return vocabulario.cantidadTerminos();
     }
-
-    /*public String mostrarVocabulario(){
-        return vocabulario.mostrarTerminos();
-    }
-
-    public String mostrarOrdenPosteo(){
-        return vocabulario.mostrarOrdenPosteo();
-    }*/
 }

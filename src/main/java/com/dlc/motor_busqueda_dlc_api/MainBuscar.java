@@ -8,18 +8,15 @@ public class MainBuscar {
     public static void main(String[] args) {
         GestorBusqueda gestorBusqueda = new GestorBusqueda();
 
-        String terminos = "estonoexiste";
+        String terminos = "quixote";
         System.out.println(System.getenv("DIRECTORIO_DOCUMENTOS"));
 
         try {
             gestorBusqueda.buscarTerminos(terminos);
+            System.out.println(gestorBusqueda.mostrarDocumentosRecuperados());
         } catch (TerminoNoEncontradoException e) {
             e.printStackTrace();
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
 
-        System.out.println(gestorBusqueda.mostrarCantidadTerminosVocabulario());
     }
 }
