@@ -1,33 +1,32 @@
 package com.dlc.motor_busqueda_dlc_api.Aplicacion;
 
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLDocumentoRepository;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLPosteoRepository;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLTerminoRepository;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
 public class GestorBusqueda {
-    DocumentoRepository documentoRepository;
-    PosteoRepository posteoRepository;
-    TerminoRepository terminoRepository;
-    Vocabulario vocabulario;
-    Buscador buscador;
+    @Inject
+    private Vocabulario vocabulario;
+
+    @Inject
+    private Buscador buscador;
 
     public GestorBusqueda(){
-        this.documentoRepository = new MySQLDocumentoRepository();
-        this.posteoRepository = new MySQLPosteoRepository();
-        this.terminoRepository = new MySQLTerminoRepository();
-        this.vocabulario = new Vocabulario();
-        this.buscador = new Buscador(vocabulario, posteoRepository);
+    }
+
+    @PostConstruct
+    private void init(){
+        this.buscador.setVocabulario(vocabulario);
         recuperarVocabulario();
     }
 
     public void recuperarVocabulario(){
-        this.vocabulario.getAllDocumentos(documentoRepository);
-        this.vocabulario.getAllTerminos(terminoRepository);
+        this.vocabulario.getAllDocumentos();
+        this.vocabulario.getAllTerminos();
     }
 
     public String buscarPathDocumento(String documento) throws DocumentoNoEncontradoException {
@@ -39,8 +38,8 @@ public class GestorBusqueda {
     }
 
     public void actualizarVocabularioLocal(String documento, String[] terminos){
-        this.vocabulario.actualizarDocumento(documento, documentoRepository);
-        this.vocabulario.actualizarTerminos(terminos, terminoRepository);
+        this.vocabulario.actualizarDocumento(documento);
+        this.vocabulario.actualizarTerminos(terminos);
     }
 
     public String[] buscarNombresDocumentos(){

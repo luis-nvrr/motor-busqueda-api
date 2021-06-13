@@ -1,10 +1,20 @@
 package com.dlc.motor_busqueda_dlc_api.Dominio;
 
+import javax.inject.Inject;
 import java.util.*;
 
 public class Vocabulario {
     private Map<String, Termino> terminos;
     private Map<String, Documento> documentos;
+
+    @Inject
+    PosteoRepository posteoRepository;
+
+    @Inject
+    DocumentoRepository documentoRepository;
+
+    @Inject
+    TerminoRepository terminoRepository;
 
     public Vocabulario(){
         this.terminos = new HashMap<>();
@@ -53,7 +63,7 @@ public class Vocabulario {
     }
 
     // retorna la lista de objetos Terminos buscados
-    public List<Termino> obtenerListaTerminos(String[] terminosString, PosteoRepository posteoRepository) {
+    public List<Termino> obtenerListaTerminos(String[] terminosString) {
         List<Termino> terminosOrdenados = new ArrayList<>();
 
         for(String terminoString : terminosString){
@@ -70,42 +80,42 @@ public class Vocabulario {
     }
 
     // guarda la tabla de terminos, indexados de un directorio
-    public void bulkSaveTerminos(TerminoRepository terminoRepository){
+    public void bulkSaveTerminos(){
         terminoRepository.bulkSaveTerminos(terminos);
     }
 
     // guarda la lista de posteos de cada termino, indexado de un directorio
-    public void bulkSavePosteos(PosteoRepository posteoRepository){
+    public void bulkSavePosteos(){
         posteoRepository.bulkSavePosteos(terminos);
     }
 
     // gurda la tabla de documentos, indexados de un directorio
-    public void bulkSaveDocumentos(DocumentoRepository documentoRepository){
+    public void bulkSaveDocumentos(){
         documentoRepository.bulkSaveDocumentos(this.documentos);
     }
 
     // guarda la tabla de terminos, indexado de un archivo
-    public void saveTerminos(TerminoRepository terminoRepository){
+    public void saveTerminos(){
         terminoRepository.saveTerminos(terminos);
     }
 
     // guarda la lista de posteos de cada termino, indexado de un archivo
-    public void savePosteos(PosteoRepository posteoRepository){
+    public void savePosteos(){
         posteoRepository.savePosteos(terminos);
     }
 
     // guarda la tabla de documentos
-    public void saveDocumentos(DocumentoRepository documentoRepository){
+    public void saveDocumentos(){
         documentoRepository.saveDocumentos(this.documentos);
     }
 
     // recupera la tabla de documentos
-    public void getAllDocumentos(DocumentoRepository documentoRepository){
+    public void getAllDocumentos(){
         this.documentos = documentoRepository.getAllDocumentos();
     }
 
     // recupera la tabla de terminos
-    public void getAllTerminos(TerminoRepository terminoRepository){
+    public void getAllTerminos(){
         this.terminos = terminoRepository.getAllTerminos();
     }
 
@@ -140,13 +150,13 @@ public class Vocabulario {
     }
 
     // busca en la BD un documento por nombre y lo actualiza en la Hashtable
-    public void actualizarDocumento(String documentoString, DocumentoRepository documentoRepository){
+    public void actualizarDocumento(String documentoString){
         Documento documentoNuevo = documentoRepository.getDocumento(documentoString);
         this.documentos.put(documentoString, documentoNuevo);
     }
 
     // busca en la BD un termino y lo actualiza en la Hashtable
-    public void actualizarTerminos(String[] terminosString, TerminoRepository terminoRepository){
+    public void actualizarTerminos(String[] terminosString){
         List<Termino> terminosNuevos = terminoRepository.getTerminos(terminosString);
         for (Termino terminoNuevo: terminosNuevos){
             this.terminos.put(terminoNuevo.getTerminoAsString(), terminoNuevo);

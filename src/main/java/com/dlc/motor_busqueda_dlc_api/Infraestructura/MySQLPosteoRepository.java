@@ -2,6 +2,7 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,10 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+@ApplicationScoped
 public class MySQLPosteoRepository implements PosteoRepository {
 
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
+
+    public MySQLPosteoRepository(){
+
+    }
 
     @Override
     public List<Posteo> getAllPosteosByTermino(String termino, Map<String, Documento> documentos) {

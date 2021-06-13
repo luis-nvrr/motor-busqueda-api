@@ -3,31 +3,45 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.ArchivoLocal;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.DirectorioLocal;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.IArchivo;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLDocumentoRepository;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLPosteoRepository;
-import com.dlc.motor_busqueda_dlc_api.Infraestructura.MySQLTerminoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.IDirectorio;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+@RequestScoped
 public class GestorIndexacion {
 
-    Indexador indexador;
-    Vocabulario vocabulario;
-    TerminoRepository terminoRepository;
-    PosteoRepository posteoRepository;
-    DocumentoRepository documentoRepository;
-    GestorBusqueda gestorBusqueda;
+    @Inject
+    private Indexador indexador;
 
-    public GestorIndexacion(GestorBusqueda gestorBusqueda){
-        this.gestorBusqueda = gestorBusqueda;
-        this.vocabulario = new Vocabulario();
-        this.indexador = new Indexador(vocabulario);
-        this.terminoRepository = new MySQLTerminoRepository();
-        this.posteoRepository = new MySQLPosteoRepository();
-        this.documentoRepository = new MySQLDocumentoRepository();
-    }
+    @Inject
+    private Vocabulario vocabulario;
+
+    @Inject
+    private GestorBusqueda gestorBusqueda;
 
     public GestorIndexacion(){
-        this(null);
+    }
+
+    @PostConstruct
+    public void init(){
+        this.indexador.setVocabulario(vocabulario);
+    }
+
+    public void cargarVocabularioDeDirectorio(String directorioPath){
+        IDirectorio directorio = new DirectorioLocal(directorioPath);
+        this.indexador.cargarVocabularioDeDirectorio(directorio);
+        persistirBulk();
+    }
+
+    private void persistirBulk(){
+        vocabulario.ordenarTerminos();
+        vocabulario.ordenarDocumentos();
+        vocabulario.ordenarPosteos();
+        vocabulario.bulkSaveDocumentos();
+        vocabulario.bulkSaveTerminos();
+        vocabulario.bulkSavePosteos();
     }
 
     public void cargarVocabularioDeArchivo(String archivoPath){
@@ -37,10 +51,10 @@ public class GestorIndexacion {
         actualizarVocabulario();
     }
 
-    public void cargarVocabularioDeDirectorio(String directorioPath){
-        IDirectorio directorio = new DirectorioLocal(directorioPath);
-        this.indexador.cargarVocabularioDeDirectorio(directorio);
-        persistirBulk();
+    private void persistir(){
+        vocabulario.saveDocumentos();
+        vocabulario.saveTerminos();
+        vocabulario.savePosteos();
     }
 
     private void actualizarVocabulario(){
@@ -49,22 +63,8 @@ public class GestorIndexacion {
         this.gestorBusqueda.actualizarVocabularioLocal(documento, terminos);
     }
 
-    private void persistir(){
-        vocabulario.saveDocumentos(documentoRepository);
-        vocabulario.saveTerminos(terminoRepository);
-        vocabulario.savePosteos(posteoRepository);
-    }
-
-    private void persistirBulk(){
-        vocabulario.ordenarTerminos();
-        vocabulario.ordenarDocumentos();
-        vocabulario.ordenarPosteos();
-        vocabulario.bulkSaveDocumentos(documentoRepository);
-        vocabulario.bulkSaveTerminos(terminoRepository);
-        vocabulario.bulkSavePosteos(posteoRepository);
-    }
-
     public int mostrarCantidadTerminosVocabulario(){
         return vocabulario.cantidadTerminos();
     }
+
 }

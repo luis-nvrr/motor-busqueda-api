@@ -15,13 +15,16 @@ import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.List;
 
-@Path("/")
+@Path("/documentos")
 public class DocumentosController {
 
     @Inject
     private GestorBusqueda gestorBusqueda;
 
-    @Path("documentos/{documento}")
+    @Inject
+    private GestorIndexacion gestorIndexacion;
+
+    @Path("/{documento}")
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getDocumentoFile(@PathParam("documento") String documento){
@@ -38,7 +41,7 @@ public class DocumentosController {
         }
     }
 
-    @Path("documentos")
+    @Path("/")
     @GET
     public Response getDocumentos(){
         JSONArray list = new JSONArray();
@@ -57,7 +60,7 @@ public class DocumentosController {
                 .build();
     }
 
-    @Path("documentos/terminos/{termino}")
+    @Path("/terminos/{termino}")
     @GET
     public Response getDocumentosByTermino(@PathParam("termino") String termino){
 
@@ -98,7 +101,7 @@ public class DocumentosController {
     }
 
     @POST
-    @Path("documentos")
+    @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(MimeMultipart file) {
         try {
@@ -115,7 +118,6 @@ public class DocumentosController {
             bodyPart.removeHeader("Content-Type");
             bodyPart.writeTo(new FileOutputStream(documentoPath));
 
-            GestorIndexacion gestorIndexacion = new GestorIndexacion(gestorBusqueda);
             gestorIndexacion.cargarVocabularioDeArchivo(documentoPath);
 
             return Response.ok("carga correcta").build();
@@ -126,6 +128,25 @@ public class DocumentosController {
                     .status(Response.Status.INTERNAL_SERVER_ERROR)
                     .build();
         }
+    }
+
+    @GET
+    @Path("/indexar")
+    public Response indexar(){
+
+        try{
+            gestorIndexacion.cargarVocabularioDeDirectorio(System.getenv("DIRECTORIO_DOCUMENTOS"));
+            return Response
+                    .status(Response.Status.OK)
+                    .entity("carga correcta!")
+                    .build();
+        }
+        catch (Exception e){
+            return Response
+                    .status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
+
     }
 
 }

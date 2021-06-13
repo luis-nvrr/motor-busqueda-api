@@ -3,14 +3,21 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoRepository;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+
+@ApplicationScoped
 public class MySQLTerminoRepository implements TerminoRepository {
 
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
+
+    public MySQLTerminoRepository(){
+
+    }
 
     @Override
     public Map<String, Termino> getAllTerminos() {

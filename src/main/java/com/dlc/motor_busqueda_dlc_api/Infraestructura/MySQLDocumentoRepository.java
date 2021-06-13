@@ -3,15 +3,21 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.sql.*;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Logger;
 
+@ApplicationScoped
 public class MySQLDocumentoRepository implements DocumentoRepository {
 
     private Connection connection;
     private static Logger logger = Logger.getLogger("global");
+
+    public MySQLDocumentoRepository(){
+
+    }
 
     @Override
     public void saveDocumentos(Map<String, Documento> documentos) {

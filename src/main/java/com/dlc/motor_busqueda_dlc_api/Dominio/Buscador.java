@@ -5,20 +5,28 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Buscador {
-    private final Vocabulario vocabulario;
+    private Vocabulario vocabulario;
     private List<DocumentoRecuperado> documentosRanking;
-    private final PosteoRepository posteoRepository;
+    //private final PosteoRepository posteoRepository;
     private final int CANTIDAD_DOCUMENTOS = 5;
+
+    public Buscador(){
+
+    }
 
     public Buscador(Vocabulario vocabulario, PosteoRepository posteoRepository){
         this.vocabulario = vocabulario;
-        this.posteoRepository = posteoRepository;
+        //this.posteoRepository = posteoRepository;
+    }
+
+    public void setVocabulario(Vocabulario vocabulario){
+        this.vocabulario = vocabulario;
     }
 
     public void buscar(String terminos) throws TerminoNoEncontradoException {
         this.documentosRanking = new ArrayList<>();
         String[] terminosSeparados =  FormatedorEntrada.formatear(terminos);
-        List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados,posteoRepository);
+        List<Termino> terminosOrdenados = vocabulario.obtenerListaTerminos(terminosSeparados);
 
         if(terminosOrdenados.isEmpty()) throw new TerminoNoEncontradoException();
 
