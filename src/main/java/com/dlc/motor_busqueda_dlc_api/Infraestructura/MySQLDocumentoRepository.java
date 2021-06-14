@@ -4,25 +4,25 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.DocumentoRepository;
 import com.dlc.motor_busqueda_dlc_api.Dominio.Documento;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.sql.*;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 @ApplicationScoped
 public class MySQLDocumentoRepository implements DocumentoRepository {
 
-    private Connection connection;
+    @Inject
+    private MySQLConnection mySQLConnection;
     private static Logger logger = Logger.getLogger("global");
 
-    public MySQLDocumentoRepository(){
-
-    }
+    public MySQLDocumentoRepository(){ }
 
     @Override
     public void saveDocumentos(Map<String, Documento> documentos) {
         try {
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -53,7 +53,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     @Override
     public void bulkSaveDocumentos(Map<String, Documento> documentos) {
         try {
-            connection = MySQLConnection.conectarJDBC();
+            Connection connection = MySQLConnection.conectarJDBC();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -79,9 +79,9 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     }
 
     public Map<String, Documento> getAllDocumentos(){
-        Map<String, Documento> documentos = new Hashtable<>();
+        Map<String, Documento> documentos = new HashMap<>();
         try{
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             String query = "SELECT * FROM Documentos";
             ResultSet resultSet = statement.executeQuery(query);
@@ -107,7 +107,7 @@ public class MySQLDocumentoRepository implements DocumentoRepository {
     @Override
     public Documento getDocumento(String documentoString) {
         try{
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Documentos WHERE nombre LIKE '%s'", documentoString);
             ResultSet resultSet = statement.executeQuery(query);

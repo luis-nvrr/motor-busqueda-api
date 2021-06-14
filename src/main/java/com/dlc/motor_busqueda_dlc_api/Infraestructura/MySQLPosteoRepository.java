@@ -3,6 +3,7 @@ package com.dlc.motor_busqueda_dlc_api.Infraestructura;
 import com.dlc.motor_busqueda_dlc_api.Dominio.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,8 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class MySQLPosteoRepository implements PosteoRepository {
 
-    private Connection connection;
+    @Inject
+    private MySQLConnection mySQLConnection;
     private static Logger logger = Logger.getLogger("global");
 
     public MySQLPosteoRepository(){
@@ -27,7 +29,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
         List<Posteo> posteosRecuperados = new ArrayList<>();
 
         try{
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             String query = String.format("SELECT * FROM Posteos WHERE termino LIKE '%s' ORDER BY frecuenciaTermino DESC", termino);
             ResultSet resultSet = statement.executeQuery(query);
@@ -54,7 +56,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void savePosteos(Map<String, Termino> terminos) {
         try {
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             StringBuilder query =
                     new StringBuilder("INSERT INTO Posteos " +
@@ -89,7 +91,7 @@ public class MySQLPosteoRepository implements PosteoRepository {
     @Override
     public void bulkSavePosteos(Map<String, Termino> terminos) {
         try {
-            connection = MySQLConnection.conectarJDBC();
+            Connection connection = MySQLConnection.conectarJDBC();
 
             assert connection != null;
             Statement statement = connection.createStatement();

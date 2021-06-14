@@ -6,8 +6,10 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.Archivo.IDirectorio;
 public class Indexador {
     private Vocabulario vocabulario;
 
-    public Indexador(){
+    public Indexador(){ }
 
+    public Indexador(Vocabulario vocabulario){
+        this.vocabulario = vocabulario;
     }
 
     public void setVocabulario(Vocabulario vocabulario){

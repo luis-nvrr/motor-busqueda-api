@@ -10,7 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 @RequestScoped
-public class GestorIndexacion {
+public class GestorIndexacionArchivo {
 
     @Inject
     private Indexador indexador;
@@ -21,27 +21,12 @@ public class GestorIndexacion {
     @Inject
     private GestorBusqueda gestorBusqueda;
 
-    public GestorIndexacion(){
+    public GestorIndexacionArchivo(){
     }
 
     @PostConstruct
     public void init(){
         this.indexador.setVocabulario(vocabulario);
-    }
-
-    public void cargarVocabularioDeDirectorio(String directorioPath){
-        IDirectorio directorio = new DirectorioLocal(directorioPath);
-        this.indexador.cargarVocabularioDeDirectorio(directorio);
-        persistirBulk();
-    }
-
-    private void persistirBulk(){
-        vocabulario.ordenarTerminos();
-        vocabulario.ordenarDocumentos();
-        vocabulario.ordenarPosteos();
-        vocabulario.bulkSaveDocumentos();
-        vocabulario.bulkSaveTerminos();
-        vocabulario.bulkSavePosteos();
     }
 
     public void cargarVocabularioDeArchivo(String archivoPath){
@@ -62,9 +47,4 @@ public class GestorIndexacion {
         String[] terminos = vocabulario.obtenerTerminosString();
         this.gestorBusqueda.actualizarVocabularioLocal(documento, terminos);
     }
-
-    public int mostrarCantidadTerminosVocabulario(){
-        return vocabulario.cantidadTerminos();
-    }
-
 }

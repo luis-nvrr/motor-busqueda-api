@@ -4,6 +4,7 @@ import com.dlc.motor_busqueda_dlc_api.Dominio.Termino;
 import com.dlc.motor_busqueda_dlc_api.Dominio.TerminoRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -12,7 +13,8 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class MySQLTerminoRepository implements TerminoRepository {
 
-    private Connection connection;
+    @Inject
+    private MySQLConnection mySQLConnection;
     private static Logger logger = Logger.getLogger("global");
 
     public MySQLTerminoRepository(){
@@ -21,9 +23,9 @@ public class MySQLTerminoRepository implements TerminoRepository {
 
     @Override
     public Map<String, Termino> getAllTerminos() {
-        Map<String, Termino> terminos = new Hashtable<>();
+        Map<String, Termino> terminos = new HashMap<>();
         try{
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -54,7 +56,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public List<Termino> getTerminos(String[] terminosString) {
         List<Termino> terminos = new ArrayList<>();
         try{
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
 
             assert connection != null;
             Statement statement = connection.createStatement();
@@ -94,7 +96,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     @Override
     public void saveTerminos(Map<String, Termino> terminos) {
         try {
-            connection = MySQLConnection.conectarPool();
+            Connection connection = mySQLConnection.conectarPool();
             Statement statement = connection.createStatement();
             StringBuilder query =
                     new StringBuilder("INSERT INTO Terminos " +
@@ -127,7 +129,7 @@ public class MySQLTerminoRepository implements TerminoRepository {
     public void bulkSaveTerminos(Map<String, Termino> terminos) {
 
         try {
-            connection = MySQLConnection.conectarJDBC();
+            Connection connection = MySQLConnection.conectarJDBC();
             Statement statement = connection.createStatement();
             StringBuilder stringBuilder = new StringBuilder();
 

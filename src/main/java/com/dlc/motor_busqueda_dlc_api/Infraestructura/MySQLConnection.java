@@ -13,7 +13,9 @@ public class MySQLConnection {
             + "&requireSSL=false"
             + "&sslMode=disabled";
 
-    public static Connection conectarPool(){
+    public MySQLConnection(){}
+
+    public Connection conectarPool(){
         try {
 
             InitialContext ctx = new InitialContext();

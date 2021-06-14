@@ -22,7 +22,7 @@ public class DocumentosController {
     private GestorBusqueda gestorBusqueda;
 
     @Inject
-    private GestorIndexacion gestorIndexacion;
+    private GestorIndexacionArchivo gestorIndexacionArchivo;
 
     @Path("/{documento}")
     @GET
@@ -118,7 +118,7 @@ public class DocumentosController {
             bodyPart.removeHeader("Content-Type");
             bodyPart.writeTo(new FileOutputStream(documentoPath));
 
-            gestorIndexacion.cargarVocabularioDeArchivo(documentoPath);
+            gestorIndexacionArchivo.cargarVocabularioDeArchivo(documentoPath);
 
             return Response.ok("carga correcta").build();
 
@@ -129,24 +129,4 @@ public class DocumentosController {
                     .build();
         }
     }
-
-    @GET
-    @Path("/indexar")
-    public Response indexar(){
-
-        try{
-            gestorIndexacion.cargarVocabularioDeDirectorio(System.getenv("DIRECTORIO_DOCUMENTOS"));
-            return Response
-                    .status(Response.Status.OK)
-                    .entity("carga correcta!")
-                    .build();
-        }
-        catch (Exception e){
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .build();
-        }
-
-    }
-
 }

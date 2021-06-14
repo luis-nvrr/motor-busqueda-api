@@ -51,15 +51,11 @@ public class Vocabulario {
         Termino recuperado = terminos.get(termino);
         Documento documento = documentos.get(documentoString);
 
-        if (recuperado == null) { recuperado = new Termino(termino); }
-        agregarDocumentoAPosteo(recuperado, documento);
-    }
-
-    // actualiza la lista de posteos del termino, agregando el Documento
-    // y guardandolo en la tabla de terminos
-    private void agregarDocumentoAPosteo(Termino termino, Documento documento){
-        this.terminos.putIfAbsent(termino.getTerminoAsString(), termino);
-        termino.agregarPosteo(documento);
+        if (recuperado == null) {
+            recuperado = new Termino(termino);
+            this.terminos.put(termino, recuperado);
+        }
+        recuperado.agregarPosteo(documento);
     }
 
     // retorna la lista de objetos Terminos buscados
@@ -80,17 +76,17 @@ public class Vocabulario {
     }
 
     // guarda la tabla de terminos, indexados de un directorio
-    public void bulkSaveTerminos(){
+    public void bulkSaveTerminos(TerminoRepository terminoRepository){
         terminoRepository.bulkSaveTerminos(terminos);
     }
 
     // guarda la lista de posteos de cada termino, indexado de un directorio
-    public void bulkSavePosteos(){
+    public void bulkSavePosteos(PosteoRepository posteoRepository){
         posteoRepository.bulkSavePosteos(terminos);
     }
 
     // gurda la tabla de documentos, indexados de un directorio
-    public void bulkSaveDocumentos(){
+    public void bulkSaveDocumentos(DocumentoRepository documentoRepository){
         documentoRepository.bulkSaveDocumentos(this.documentos);
     }
 
